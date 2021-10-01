@@ -8,17 +8,23 @@ namespace FluentCli.Sandbox
         static async Task Main()
         {
             var cli = FluentCliBuilder.Create()
-                .WithHandler<DefaultCommandHandler>()
-                .AddCommand<HelloCommandHandler>("hello", cmd => cmd
-                    .AddCommand<FooCommandHandler>("foo")
-                    .AddCommand<BarCommandHandler>("bar")
+                .WithDefaultHandler<DefaultCommandHandler>()
+                .AddCommand<HelloCommandHandler>("hello", hello => hello
+                    .AddCommand<FooCommandHandler>("foo", foo => foo
+                        .AddCommand<BarCommandHandler>("bar")
+                    )
+                    .AddCommand<BarCommandHandler>("bar", bar => bar
+                        .AddCommand<FooCommandHandler>("foo")
+                    )
                 )
                 .Build();
 
             await cli.Execute("");
             await cli.Execute("hello");
             await cli.Execute("hello foo");
+            await cli.Execute("hello foo bar");
             await cli.Execute("hello bar");
+            await cli.Execute("hello bar foo");
             Console.ReadLine();
         }
     }

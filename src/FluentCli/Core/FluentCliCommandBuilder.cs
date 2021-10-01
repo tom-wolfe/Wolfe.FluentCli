@@ -8,7 +8,7 @@ namespace FluentCli.Core
     {
         private readonly string _name;
         private readonly Type _handlerType;
-        private readonly List<FluentCliCommand> _subCommands = new();
+        private readonly List<FluentCliCommand> _commands = new();
 
         protected FluentCliCommandBuilder(string name, Type handlerType)
         {
@@ -24,24 +24,23 @@ namespace FluentCli.Core
             {
                 Name = _name,
                 Handler = _handlerType,
-                SubCommands = _subCommands
+                SubCommands = _commands
             };
         }
 
-        public IFluentCliCommandBuilder AddCommand<THandler>(string name) where THandler : ICommandHandler
+        public IFluentCliCommandBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
         {
-            _subCommands.Add(new FluentCliCommand()
-            {
-                Name = name,
-                Handler = typeof(THandler)
-            });
+            var commandBuilder = Create<THandler>(name);
+            command?.Invoke(commandBuilder);
+            var subCommand = commandBuilder.Build();
+            _commands.Add(subCommand);
             return this;
         }
     }
 
     public interface IFluentCliCommandBuilder
     {
-        IFluentCliCommandBuilder AddCommand<THandler>(string name) where THandler : ICommandHandler;
+        IFluentCliCommandBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler;
         FluentCliCommand Build();
     }
 }

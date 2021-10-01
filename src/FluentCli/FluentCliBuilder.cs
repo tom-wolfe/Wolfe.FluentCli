@@ -29,17 +29,7 @@ namespace FluentCli
             return new Core.FluentCli(_serviceProvider, _parser, rootCommand);
         }
 
-        public IFluentCliBuilder AddCommand<THandler>(string name) where THandler : ICommandHandler
-        {
-            _subCommands.Add(new FluentCliCommand()
-            {
-                Name = name,
-                Handler = typeof(THandler)
-            });
-            return this;
-        }
-
-        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command) where THandler : ICommandHandler
+        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
         {
             var builder = FluentCliCommandBuilder.Create<THandler>(name);
             command?.Invoke(builder);
@@ -48,7 +38,7 @@ namespace FluentCli
             return this;
         }
 
-        public IFluentCliBuilder WithHandler<THandler>() where THandler : ICommandHandler
+        public IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler
         {
             _handler = typeof(THandler);
             return this;
@@ -69,11 +59,10 @@ namespace FluentCli
 
     public interface IFluentCliBuilder
     {
-        IFluentCliBuilder AddCommand<THandler>(string name) where THandler : ICommandHandler;
-        IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command) where THandler : ICommandHandler;
+        IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler;
         IFluentCliBuilder WithServiceProvider(IServiceProvider serviceProvider);
         IFluentCliBuilder WithParser(IFluentCliParser parser);
-        IFluentCliBuilder WithHandler<THandler>() where THandler : ICommandHandler;
+        IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler;
         IFluentCli Build();
     }
 }
