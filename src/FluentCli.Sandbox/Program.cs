@@ -9,7 +9,7 @@ namespace FluentCli.Sandbox
         {
             var cli = FluentCliBuilder.Create()
                 .WithDefaultHandler<DefaultCommandHandler>()
-                .AddCommand<HelloCommandHandler>("hello", hello => hello
+                .AddCommand<HelloCommandHandler, HelloCommandOptions>("hello", hello => hello
                     .AddCommand<FooCommandHandler>("foo", foo => foo
                         .AddCommand<BarCommandHandler>("bar")
                     )
@@ -31,25 +31,30 @@ namespace FluentCli.Sandbox
 
     public class DefaultCommandHandler : ICommandHandler
     {
-        public Task Execute()
+        public Task Execute(object options)
         {
             Console.WriteLine("Default");
             return Task.CompletedTask;
         }
     }
 
-    public class HelloCommandHandler : ICommandHandler
+    public class HelloCommandOptions
     {
-        public Task Execute()
+        public string Name { get; set; }
+    }
+
+    public class HelloCommandHandler : ICommandHandler<HelloCommandOptions>
+    {
+        public Task Execute(HelloCommandOptions options)
         {
-            Console.WriteLine("Hello!");
+            Console.WriteLine($"Hello {options?.Name}!");
             return Task.CompletedTask;
         }
     }
 
     public class FooCommandHandler : ICommandHandler
     {
-        public Task Execute()
+        public Task Execute(object options)
         {
             Console.WriteLine("Foo");
             return Task.CompletedTask;
@@ -58,7 +63,7 @@ namespace FluentCli.Sandbox
 
     public class BarCommandHandler : ICommandHandler
     {
-        public Task Execute()
+        public Task Execute(object options)
         {
             Console.WriteLine("Bar");
             return Task.CompletedTask;

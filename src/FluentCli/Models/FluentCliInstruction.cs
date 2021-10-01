@@ -1,7 +1,10 @@
-﻿namespace FluentCli.Models
+﻿using System.Collections.Generic;
+
+namespace FluentCli.Models
 {
     public class FluentCliInstruction
     {
         public string[] Commands { get; init; }
+        public Dictionary<string, string> Options { get; init; }
     }
 }

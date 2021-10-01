@@ -31,7 +31,12 @@ namespace FluentCli
 
         public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
         {
-            var builder = FluentCliCommandBuilder.Create<THandler>(name);
+            return AddCommand<THandler, object>(name, command);
+        }
+
+        public IFluentCliBuilder AddCommand<THandler, TOptions>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler<TOptions>
+        {
+            var builder = FluentCliCommandBuilder.Create<THandler, TOptions>(name);
             command?.Invoke(builder);
             var cmd = builder.Build();
             _subCommands.Add(cmd);
@@ -60,6 +65,7 @@ namespace FluentCli
     public interface IFluentCliBuilder
     {
         IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler;
+        IFluentCliBuilder AddCommand<THandler, TOptions>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler<TOptions>;
         IFluentCliBuilder WithServiceProvider(IServiceProvider serviceProvider);
         IFluentCliBuilder WithParser(IFluentCliParser parser);
         IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler;

@@ -16,7 +16,8 @@ namespace FluentCli.Core
             _handlerType = handlerType;
         }
 
-        public static IFluentCliCommandBuilder Create<THandler>(string name) where THandler : ICommandHandler => new FluentCliCommandBuilder(name, typeof(THandler));
+        public static IFluentCliCommandBuilder Create<THandler>(string name) where THandler : ICommandHandler => Create<THandler, object>(name);
+        public static IFluentCliCommandBuilder Create<THandler, TOptions>(string name) where THandler : ICommandHandler<TOptions> => new FluentCliCommandBuilder(name, typeof(THandler));
 
         public FluentCliCommand Build()
         {

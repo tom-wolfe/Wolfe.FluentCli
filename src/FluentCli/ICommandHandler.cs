@@ -2,8 +2,13 @@
 
 namespace FluentCli
 {
-    public interface ICommandHandler
+    public interface ICommandHandler : ICommandHandler<object>
     {
-        Task Execute();
+
+    }
+
+    public interface ICommandHandler<in TOptions>
+    {
+        Task Execute(TOptions options = default);
     }
 }

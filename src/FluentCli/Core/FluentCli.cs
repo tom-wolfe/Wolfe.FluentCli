@@ -3,6 +3,7 @@ using FluentCli.Models;
 using FluentCli.Parser;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace FluentCli.Core
@@ -24,14 +25,16 @@ namespace FluentCli.Core
         {
             var instruction = _parser.Parse(args);
             var command = ResolveCommand(instruction);
-            return ExecuteCore(command);
+            var options = ResolveOptions(instruction, command);
+            return ExecuteCore(command, options);
         }
 
         public Task Execute(params string[] args)
         {
             var instruction = _parser.Parse(args);
             var command = ResolveCommand(instruction);
-            return ExecuteCore(command);
+            var options = ResolveOptions(instruction, command);
+            return ExecuteCore(command, options);
         }
 
         protected virtual FluentCliCommand ResolveCommand(FluentCliInstruction instruction)
@@ -48,11 +51,24 @@ namespace FluentCli.Core
             return currentCommand;
         }
 
-        protected virtual Task ExecuteCore(FluentCliCommand command)
+        protected virtual object ResolveOptions(FluentCliInstruction instruction, FluentCliCommand command)
         {
-            var handler = _serviceProvider.GetService(command.Handler);
-            var typedHandler = handler as ICommandHandler ?? throw new InvalidCommandHandlerException(command.Name);
-            return typedHandler.Execute();
+            return null;
+        }
+
+        protected virtual Task ExecuteCore(FluentCliCommand command, object options)
+        {
+            var handler = _serviceProvider.GetService(command.Handler) ?? throw new InvalidCommandHandlerException(command.Name);
+
+            var handlerType = handler.GetType();
+            // TODO: Validate handler type.
+
+            var invokeResult = handlerType.InvokeMember(nameof(ICommandHandler<object>.Execute), BindingFlags.InvokeMethod, null, handler, new []{ options });
+
+            var invokeTask = invokeResult as Task;
+            // TODO: Validate return task;
+
+            return invokeTask;
         }
     }
 }
