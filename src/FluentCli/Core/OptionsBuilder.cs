@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FluentCli.Mapping;
@@ -18,7 +17,7 @@ namespace FluentCli.Core
             return this;
         }
 
-        public IOptionsBuilder<TOptions> UseTypeConverter<T>(ITypeConverter converter)
+        public IOptionsBuilder<TOptions> UseTypeConverter(ITypeConverter converter)
         {
             _typeConverter = converter;
             return this;
@@ -77,6 +76,7 @@ namespace FluentCli.Core
     public interface IOptionsBuilder<TOptions>
     {
         IOptionsBuilder<TOptions> UseNamingStrategy(IPropertyNamingStrategy strategy);
+        IOptionsBuilder<TOptions> UseTypeConverter(ITypeConverter converter);
         CliOptions Build();
     }
 }
