@@ -4,20 +4,20 @@ using System.Collections.Generic;
 
 namespace FluentCli.Core
 {
-    public class FluentCliCommandBuilder : IFluentCliCommandBuilder, IFluentCliDefaultCommandBuilder
+    internal class FluentCliCommandBuilder : IFluentCliCommandBuilder, IFluentCliDefaultCommandBuilder
     {
         private readonly string _name;
         private readonly Type _handlerType;
         private readonly List<FluentCliCommand> _commands = new();
         private FluentCliOptions _options;
 
-        protected FluentCliCommandBuilder(string name, Type handlerType)
+        public FluentCliCommandBuilder() : this("", null) { }
+
+        public FluentCliCommandBuilder(string name, Type handlerType)
         {
             _name = name;
             _handlerType = handlerType;
         }
-
-        public static FluentCliCommandBuilder Create<THandler>(string name) => new (name, typeof(THandler));
 
         public FluentCliCommand Build() => new()
         {
@@ -31,7 +31,7 @@ namespace FluentCli.Core
 
         public IFluentCliCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder<TOptions>> options = null)
         {
-            var builder = FluentCliOptionsBuilder<TOptions>.Create();
+            var builder = new FluentCliOptionsBuilder<TOptions>();
             options?.Invoke(builder);
             _options = builder.Build();
             return this;
@@ -39,7 +39,7 @@ namespace FluentCli.Core
 
         public IFluentCliCommandBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
         {
-            var builder = Create<THandler>(name);
+            var builder = new FluentCliCommandBuilder(name, typeof(THandler));
             command?.Invoke(builder);
             var subCommand = builder.Build();
             _commands.Add(subCommand);

@@ -5,7 +5,7 @@ using FluentCli.Models;
 
 namespace FluentCli.Parser
 {
-    class FluentCliParser : IFluentCliParser
+    internal class FluentCliParser : IFluentCliParser
     {
         private static readonly string[] OptionMarkers = { "--", "-", "/" };
 
@@ -21,7 +21,7 @@ namespace FluentCli.Parser
             return ParseCore(args);
         }
 
-        protected virtual FluentCliInstruction ParseCore(string[] args)
+        private static FluentCliInstruction ParseCore(string[] args)
         {
             var commands = new List<string>();
             var options = new Dictionary<string, string>();

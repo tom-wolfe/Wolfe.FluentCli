@@ -9,13 +9,15 @@ namespace FluentCli.Sandbox
         {
             var cli = FluentCliBuilder.Create()
                 .WithDefaultCommand<DefaultCommandHandler>(def => def
-                    .WithOptions<HelloCommandOptions>(options => options
-                        .AddOption("n", "name", true, (o, v) => o.Name = v)
-                    )
+                    .WithOptions<HelloCommandOptions>()
                 )
                 .AddCommand<HelloCommandHandler>("hello", hello => hello
                     .WithOptions<HelloCommandOptions>(options => options
-                        .AddOption("n", "name", true, (o, v) => o.Name = v)
+                        .AddOption("n", "name", true)
+                        .WithMap(opt => new HelloCommandOptions
+                        {
+                            FirstName = opt["name"]
+                        })
                     )
                     .AddCommand<FooCommandHandler>("foo", foo => foo
                         .AddCommand<BarCommandHandler>("bar")
@@ -26,7 +28,7 @@ namespace FluentCli.Sandbox
                 )
                 .Build();
 
-            await cli.Execute("--name Tom");
+            await cli.Execute("--first-name Tom");
             await cli.Execute("hello --name Tom");
             await cli.Execute("hello foo");
             await cli.Execute("hello foo bar");
@@ -40,21 +42,21 @@ namespace FluentCli.Sandbox
     {
         public Task Execute(HelloCommandOptions options)
         {
-            Console.WriteLine($"Default: {options.Name}");
+            Console.WriteLine($"Default: {options.FirstName}");
             return Task.CompletedTask;
         }
     }
 
     public class HelloCommandOptions
     {
-        public string Name { get; set; }
+        public string FirstName { get; set; }
     }
 
     public class HelloCommandHandler : ICommandHandler<HelloCommandOptions>
     {
         public Task Execute(HelloCommandOptions options)
         {
-            Console.WriteLine($"Hello {options?.Name}!");
+            Console.WriteLine($"Hello {options.FirstName}!");
             return Task.CompletedTask;
         }
     }

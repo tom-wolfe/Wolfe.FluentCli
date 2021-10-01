@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FluentCli.Models
+﻿namespace FluentCli.Models
 {
     public class FluentCliOption
     {
@@ -8,6 +6,5 @@ namespace FluentCli.Models
         public string LongName { get; init; }
         public string Description { get; init; }
         public bool Required { get; init; }
-        public Action<dynamic, string> Assign { get; init; }
     }
 }

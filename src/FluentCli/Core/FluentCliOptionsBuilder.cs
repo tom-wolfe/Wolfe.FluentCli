@@ -1,36 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using FluentCli.Exceptions;
+using FluentCli.Mapping;
 using FluentCli.Models;
 
 namespace FluentCli.Core
 {
-    public class FluentCliOptionsBuilder<TOptions> : IFluentCliOptionsBuilder<TOptions>
+    internal class FluentCliOptionsBuilder<TOptions> : IFluentCliOptionsBuilder<TOptions>
     {
-        private readonly Type _model;
-        private readonly List<FluentCliOption> _options = new();
+        private List<FluentCliOption> _options = new();
+        private OptionsMap<TOptions> _optionsMap;
 
-        protected FluentCliOptionsBuilder(Type model)
+        public IFluentCliOptionsBuilder<TOptions> WithMap(OptionsMap<TOptions> map)
         {
-            _model = model;
+            _optionsMap = map;
+            return this;
         }
 
-        public static FluentCliOptionsBuilder<TOptions> Create() => new(typeof(TOptions));
-
-        public IFluentCliOptionsBuilder<TOptions> AutoMap()
-        {
-            // TODO: Make this work.
-            throw new NotImplementedException();
-        }
-
-        public IFluentCliOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required, Action<TOptions, string> assign) =>
+        public IFluentCliOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required) =>
             AddOption(new FluentCliOption
             {
                 ShortName = shortName,
                 LongName = longName,
-                Required = required,
-                Assign = (x, y) => assign(x, y),
+                Required = required
             });
 
         public IFluentCliOptionsBuilder<TOptions> AddOption(FluentCliOption option)
@@ -45,17 +38,26 @@ namespace FluentCli.Core
             return this;
         }
 
-        public FluentCliOptions Build() => new()
+        public FluentCliOptions Build()
         {
-            Model = _model,
-            Options = _options
-        };
+            switch (_optionsMap)
+            {
+                case null when _options.Any(): throw new Exception("Options without map");
+                case null:
+                    var map = PropertyMap<TOptions>.Create();
+                    _options = map.Options;
+                    _optionsMap = o => map.Create(o);
+                    break;
+            }
+
+            return new (){ Options = _options, OptionsMap = o => _optionsMap(o) };
+        }
     }
 
-    public interface IFluentCliOptionsBuilder<TOptions>
+    public interface IFluentCliOptionsBuilder<in TOptions>
     {
-        IFluentCliOptionsBuilder<TOptions> AutoMap();
-        IFluentCliOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required, Action<TOptions, string> assign);
+        IFluentCliOptionsBuilder<TOptions> WithMap(OptionsMap<TOptions> map);
+        IFluentCliOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required);
         IFluentCliOptionsBuilder<TOptions> AddOption(FluentCliOption option);
         FluentCliOptions Build();
     }

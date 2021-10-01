@@ -32,7 +32,7 @@ namespace FluentCli
 
         public IFluentCliBuilder WithDefaultCommand<THandler>(Action<IFluentCliDefaultCommandBuilder> command = null)
         {
-            var builder = FluentCliCommandBuilder.Create<THandler>("");
+            var builder = new FluentCliCommandBuilder("", typeof(THandler));
             command?.Invoke(builder);
             _defaultBuilder = builder;
             return this;
@@ -47,7 +47,7 @@ namespace FluentCli
 
         public IFluentCli Build()
         {
-            var defaultBuilder = _defaultBuilder ?? FluentCliCommandBuilder.Create<object>("");
+            var defaultBuilder = _defaultBuilder ?? new FluentCliCommandBuilder();
             var defaultCommand = defaultBuilder.Build();
             defaultCommand.SubCommands.AddRange(_subCommands);
             return new Core.FluentCli(_serviceProvider, _parser, defaultCommand);
@@ -55,7 +55,7 @@ namespace FluentCli
 
         private static FluentCliCommand BuildCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command)
         {
-            var builder = FluentCliCommandBuilder.Create<THandler>(name);
+            var builder = new FluentCliCommandBuilder(name, typeof(THandler));
             command?.Invoke(builder);
             return builder.Build();
         }
