@@ -9,7 +9,8 @@ namespace FluentCli
 {
     public class FluentCliBuilder : IFluentCliBuilder
     {
-        private Type _handler;
+        private Type _handlerType;
+        private Type _optionsType;
         private readonly List<FluentCliCommand> _subCommands = new();
         private IFluentCliParser _parser = new FluentCliParser();
         private IServiceProvider _serviceProvider = new DefaultServiceProvider();
@@ -23,16 +24,15 @@ namespace FluentCli
             var rootCommand = new FluentCliCommand()
             {
                 Name = "",
-                Handler = _handler,
+                Handler = _handlerType,
+                Options = _optionsType,
                 SubCommands = _subCommands
             };
             return new Core.FluentCli(_serviceProvider, _parser, rootCommand);
         }
 
-        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
-        {
-            return AddCommand<THandler, object>(name, command);
-        }
+        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler =>
+            AddCommand<THandler, object>(name, command);
 
         public IFluentCliBuilder AddCommand<THandler, TOptions>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler<TOptions>
         {
@@ -43,9 +43,13 @@ namespace FluentCli
             return this;
         }
 
-        public IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler
+        public IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler =>
+            WithDefaultHandler<THandler, object>();
+
+        public IFluentCliBuilder WithDefaultHandler<THandler, TOptions>() where THandler : ICommandHandler<TOptions>
         {
-            _handler = typeof(THandler);
+            _handlerType = typeof(THandler);
+            _optionsType = typeof(TOptions);
             return this;
         }
 

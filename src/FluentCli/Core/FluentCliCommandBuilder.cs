@@ -8,26 +8,27 @@ namespace FluentCli.Core
     {
         private readonly string _name;
         private readonly Type _handlerType;
+        private readonly Type _optionsType;
         private readonly List<FluentCliCommand> _commands = new();
 
-        protected FluentCliCommandBuilder(string name, Type handlerType)
+        protected FluentCliCommandBuilder(string name, Type handlerType, Type optionsType)
         {
             _name = name;
             _handlerType = handlerType;
+            _optionsType = optionsType;
         }
 
         public static IFluentCliCommandBuilder Create<THandler>(string name) where THandler : ICommandHandler => Create<THandler, object>(name);
-        public static IFluentCliCommandBuilder Create<THandler, TOptions>(string name) where THandler : ICommandHandler<TOptions> => new FluentCliCommandBuilder(name, typeof(THandler));
+        public static IFluentCliCommandBuilder Create<THandler, TOptions>(string name) where THandler : ICommandHandler<TOptions> =>
+            new FluentCliCommandBuilder(name, typeof(THandler), typeof(TOptions));
 
-        public FluentCliCommand Build()
+        public FluentCliCommand Build() => new()
         {
-            return new FluentCliCommand()
-            {
-                Name = _name,
-                Handler = _handlerType,
-                SubCommands = _commands
-            };
-        }
+            Name = _name,
+            Handler = _handlerType,
+            Options = _optionsType,
+            SubCommands = _commands
+        };
 
         public IFluentCliCommandBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
         {

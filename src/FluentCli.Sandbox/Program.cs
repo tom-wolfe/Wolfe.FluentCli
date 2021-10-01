@@ -19,8 +19,8 @@ namespace FluentCli.Sandbox
                 )
                 .Build();
 
-            await cli.Execute("");
-            await cli.Execute("hello");
+            // await cli.Execute("");
+            await cli.Execute("hello --name Tom");
             await cli.Execute("hello foo");
             await cli.Execute("hello foo bar");
             await cli.Execute("hello bar");
