@@ -27,11 +27,11 @@ namespace FluentCli.Core
             SubCommands = _commands
         };
 
-        IFluentCliDefaultCommandBuilderNoOptions IFluentCliDefaultCommandBuilder.WithOptions<TOptions>(Action<IFluentCliOptionsBuilder> options) => WithOptions<TOptions>(options);
+        IFluentCliDefaultCommandBuilderNoOptions IFluentCliDefaultCommandBuilder.WithOptions<TOptions>(Action<IFluentCliOptionsBuilder<TOptions>> options) => WithOptions(options);
 
-        public IFluentCliCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder> options = null)
+        public IFluentCliCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder<TOptions>> options = null)
         {
-            var builder = FluentCliOptionsBuilder.Create<TOptions>();
+            var builder = FluentCliOptionsBuilder<TOptions>.Create();
             options?.Invoke(builder);
             _options = builder.Build();
             return this;
@@ -54,12 +54,12 @@ namespace FluentCli.Core
 
     public interface IFluentCliDefaultCommandBuilder : IFluentCliDefaultCommandBuilderNoOptions
     {
-        IFluentCliDefaultCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder> options = null);
+        IFluentCliDefaultCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder<TOptions>> options = null);
     }
 
     public interface IFluentCliCommandBuilder : IFluentCliCommandBuilderNoOptions
     {
-        IFluentCliCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder> options = null);
+        IFluentCliCommandBuilderNoOptions WithOptions<TOptions>(Action<IFluentCliOptionsBuilder<TOptions>> options = null);
     }
 
     public interface IFluentCliCommandBuilderNoOptions : IFluentCliDefaultCommandBuilderNoOptions

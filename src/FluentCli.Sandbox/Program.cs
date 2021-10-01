@@ -9,10 +9,14 @@ namespace FluentCli.Sandbox
         {
             var cli = FluentCliBuilder.Create()
                 .WithDefaultCommand<DefaultCommandHandler>(def => def
-                    .WithOptions<HelloCommandOptions>()
+                    .WithOptions<HelloCommandOptions>(options => options
+                        .AddOption("n", "name", true, (o, v) => o.Name = v)
+                    )
                 )
                 .AddCommand<HelloCommandHandler>("hello", hello => hello
-                    .WithOptions<HelloCommandOptions>()
+                    .WithOptions<HelloCommandOptions>(options => options
+                        .AddOption("n", "name", true, (o, v) => o.Name = v)
+                    )
                     .AddCommand<FooCommandHandler>("foo", foo => foo
                         .AddCommand<BarCommandHandler>("bar")
                     )
@@ -22,7 +26,6 @@ namespace FluentCli.Sandbox
                 )
                 .Build();
 
-            await cli.Execute("");
             await cli.Execute("--name Tom");
             await cli.Execute("hello --name Tom");
             await cli.Execute("hello foo");
