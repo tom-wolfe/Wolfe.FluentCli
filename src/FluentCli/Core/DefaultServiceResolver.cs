@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using System;
 
-namespace FluentCli.Service
+namespace FluentCli.Core
 {
     internal class DefaultServiceProvider : IServiceProvider
     {

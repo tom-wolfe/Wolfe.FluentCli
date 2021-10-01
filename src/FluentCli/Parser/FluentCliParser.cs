@@ -16,7 +16,7 @@ namespace FluentCli.Parser
             return ParseCore(argsArray);
         }
 
-        public CliInstruction Parse(string[] args)
+        public CliInstruction Parse(IEnumerable<string> args)
         {
             return ParseCore(args);
         }

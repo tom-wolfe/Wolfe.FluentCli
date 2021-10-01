@@ -1,7 +1,6 @@
 ﻿using FluentCli.Core;
 using FluentCli.Models;
 using FluentCli.Parser;
-using FluentCli.Service;
 using System;
 using System.Collections.Generic;
 

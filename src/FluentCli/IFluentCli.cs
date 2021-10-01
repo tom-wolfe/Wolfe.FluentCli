@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace FluentCli.Core
+namespace FluentCli
 {
     public interface IFluentCli
     {

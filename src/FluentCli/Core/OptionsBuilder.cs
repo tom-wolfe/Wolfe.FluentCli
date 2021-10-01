@@ -18,7 +18,7 @@ namespace FluentCli.Core
 
         public CliOptions Build()
         {
-            var map = new Dictionary<string, PropertyCast>();
+            var map = new Dictionary<string, PropertyInfo>();
             var options = new List<CliOption>();
 
             var type = typeof(TOptions);
@@ -28,11 +28,7 @@ namespace FluentCli.Core
             {
                 var option = CreateOption(prop);
                 options.Add(option);
-                map.Add(option.LongName, new PropertyCast()
-                {
-                    Property = prop,
-                    Cast = x => x
-                });
+                map.Add(option.LongName, prop);
             }
 
             return new CliOptions()
@@ -45,9 +41,8 @@ namespace FluentCli.Core
         private CliOption CreateOption(PropertyInfo property)
         {
             var strategy = _namingStrategy ?? new KebabCasePropertyNamingStrategy();
-            var attribute = property.GetCustomAttributes(typeof(FluentCliOptionAttribute), true).FirstOrDefault() as FluentCliOptionAttribute;
 
-            if (attribute == null)
+            if (property.GetCustomAttributes(typeof(FluentCliOptionAttribute), true).FirstOrDefault() is not FluentCliOptionAttribute attribute)
             {
                 return new CliOption
                 {

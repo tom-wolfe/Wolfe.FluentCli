@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Reflection;
 
 namespace FluentCli.Mapping
 {
     internal class AutomaticOptionMap : IOptionMap
     {
         private readonly Type _model;
-        private readonly Dictionary<string, PropertyCast> _propertyMap;
+        private readonly Dictionary<string, PropertyInfo> _propertyMap;
 
-        public AutomaticOptionMap(Type model, Dictionary<string, PropertyCast> map)
+        public AutomaticOptionMap(Type model, Dictionary<string, PropertyInfo> map)
         {
             _model = model;
             _propertyMap = map;
@@ -26,12 +26,10 @@ namespace FluentCli.Mapping
         {
             foreach (var (key, value) in values)
             {
-                var (_, propertyCast) =
-                    _propertyMap.FirstOrDefault(k => k.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
-                if (propertyCast == null) continue;
+                var property = _propertyMap[key];
+                if (property == null) continue;
 
-                var propValue = propertyCast.Cast?.Invoke(value) ?? value;
-                propertyCast.Property.SetValue(model, propValue);
+                property.SetValue(model, value);
             }
         }
     }
