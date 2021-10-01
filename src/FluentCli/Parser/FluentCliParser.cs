@@ -1,7 +1,7 @@
-﻿using System;
+﻿using FluentCli.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using FluentCli.Models;
 
 namespace FluentCli.Parser
 {

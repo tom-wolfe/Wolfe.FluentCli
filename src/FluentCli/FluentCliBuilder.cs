@@ -9,7 +9,7 @@ namespace FluentCli
 {
     public class FluentCliBuilder : IFluentCliBuilder
     {
-        private IFluentCliDefaultCommandBuilder _defaultBuilder ;
+        private IFluentCliDefaultCommandBuilder _defaultBuilder;
         private readonly List<FluentCliCommand> _subCommands = new();
         private IFluentCliParser _parser = new FluentCliParser();
         private IServiceProvider _serviceProvider = new DefaultServiceProvider();

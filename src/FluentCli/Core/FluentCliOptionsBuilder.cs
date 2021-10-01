@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentCli.Exceptions;
+﻿using FluentCli.Exceptions;
 using FluentCli.Mapping;
 using FluentCli.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FluentCli.Core
 {
@@ -50,7 +50,7 @@ namespace FluentCli.Core
                     break;
             }
 
-            return new (){ Options = _options, OptionsMap = o => _optionsMap(o) };
+            return new() { Options = _options, OptionsMap = o => _optionsMap(o) };
         }
     }
 

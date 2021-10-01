@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using FluentCli.Extensions;
+﻿using FluentCli.Extensions;
 using FluentCli.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FluentCli.Mapping
 {
