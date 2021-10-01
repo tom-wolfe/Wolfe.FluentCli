@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FluentCli.Mapping;
 
 namespace FluentCli.Sandbox
 {
@@ -10,25 +9,18 @@ namespace FluentCli.Sandbox
         {
             var cli = FluentCliBuilder.Create()
                 .WithDefaultCommand<DefaultCommandHandler>(command => command
-                    .WithOptions<DefaultCommandOptions>(options => options
-                        .UseNamingStrategy(new KebabCasePropertyNamingStrategy())
-                    )
+                    .WithOptions<DefaultCommandOptions>()
                 )
                 .AddCommand<HelloCommandHandler>("hello", hello => hello
-                    .WithManualOptions<HelloCommandOptions>(options => options
-                        .AddOption("n", "name", true)
-                        .UseMap(opt => new HelloCommandOptions
-                        {
-                            FirstName = opt["name"]
-                        })
-                    )
+                    .WithOptions<HelloCommandOptions>()
                     .AddCommand<FooCommandHandler>("foo")
                     .AddCommand<BarCommandHandler>("bar")
                 )
                 .Build();
 
             await cli.Execute("--first-name Tom -a 31");
-            await cli.Execute("hello -n Tom");
+            await cli.Execute("hello -n \"Joe Bloggs\"");
+            await cli.Execute("hello -n \"Joe Bloggs");
             await cli.Execute("hello foo");
             await cli.Execute("hello bar");
             Console.ReadLine();

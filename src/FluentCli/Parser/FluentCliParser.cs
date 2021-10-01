@@ -1,19 +1,58 @@
 ﻿using FluentCli.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace FluentCli.Parser
 {
     internal class FluentCliParser : IFluentCliParser
     {
+        private const char STRING_MARKER = '"';
         private static readonly string[] OptionMarkers = { "--", "-", "/" };
 
         public CliInstruction Parse(string args)
         {
-            // TODO: Make this more flexible to allow for quoted strings.
-            var argsArray = args.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            return ParseCore(argsArray);
+            var parsedArgs = new List<string>();
+
+            var stream = new Queue<char>(args);
+            var buffer = new StringBuilder();
+
+            while (stream.Count > 0)
+            {
+                var cur = stream.Dequeue();
+                switch (cur)
+                {
+                    case STRING_MARKER:
+                        while (true)
+                        {
+                            if (stream.Count == 0) { break; }
+                            cur = stream.Dequeue();
+                            if (cur == STRING_MARKER)
+                            {
+                                parsedArgs.Add(buffer.ToString());
+                                buffer.Clear();
+                                break;
+                            }
+                            buffer.Append(cur);
+                        }
+
+                        break;
+                    case ' ':
+                    case '\t':
+                        if (buffer.Length > 0)
+                        {
+                            parsedArgs.Add(buffer.ToString());
+                            buffer.Clear();
+                        }
+                        break;
+                    default:
+                        buffer.Append(cur);
+                        break;
+                }
+            }
+            if (buffer.Length > 0) { parsedArgs.Add(buffer.ToString()); }
+
+            return ParseCore(parsedArgs);
         }
 
         public CliInstruction Parse(IEnumerable<string> args)
@@ -33,7 +72,7 @@ namespace FluentCli.Parser
                 if (IsOption(current))
                 {
                     // If the next arg is another option, default to true, otherwise consume the option value;
-                    var optionValue = IsOption(argQueue.Peek()) ? true.ToString() : argQueue.Dequeue();
+                    var optionValue = argQueue.Count == 0 || IsOption(argQueue.Peek()) ? true.ToString() : argQueue.Dequeue();
                     options.Add(StripOptionMarker(current), optionValue);
                 }
                 else
