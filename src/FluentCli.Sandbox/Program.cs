@@ -12,9 +12,6 @@ namespace FluentCli.Sandbox
                     .WithOptions<HelloCommandOptions>()
                 )
                 .AddCommand<HelloCommandHandler>("hello", hello => hello
-                    .AddCommand<FooCommandHandler>("foo", foo => foo
-                        .AddCommand<BarCommandHandler>("bar")
-                    )
                     .WithOptions<HelloCommandOptions>()
                     .AddCommand<FooCommandHandler>("foo", foo => foo
                         .AddCommand<BarCommandHandler>("bar")

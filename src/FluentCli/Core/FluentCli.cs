@@ -54,11 +54,13 @@ namespace FluentCli.Core
 
         protected virtual object ResolveOptions(FluentCliInstruction instruction, FluentCliCommand command)
         {
-            if (command.Options == null) { return null; }
+            var options = command.Options;
+            if (options?.Model == null) { return null; }
+            var model = _serviceProvider.GetService(options.Model) ?? Activator.CreateInstance(options.Model);
 
-            var options = _serviceProvider.GetService(command.Options) ?? Activator.CreateInstance(command.Options);
             // TODO: Bind fields.
-            return options;
+
+            return model;
         }
 
         protected virtual Task ExecuteCore(FluentCliCommand command, object options)

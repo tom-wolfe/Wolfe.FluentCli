@@ -7,7 +7,7 @@ namespace FluentCli.Models
     {
         public string Name { get; init; }
         public Type Handler { get; init; }
-        public Type Options { get; init; }
+        public FluentCliOptions Options { get; init; }
         public List<FluentCliCommand> SubCommands { get; init; } = new();
     }
 }
