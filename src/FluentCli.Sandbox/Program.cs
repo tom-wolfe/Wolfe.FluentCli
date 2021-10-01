@@ -27,7 +27,7 @@ namespace FluentCli.Sandbox
                 )
                 .Build();
 
-            await cli.Execute("--first-name Tom");
+            await cli.Execute("--first-name Tom -a 31");
             await cli.Execute("hello -n Tom");
             await cli.Execute("hello foo");
             await cli.Execute("hello bar");
@@ -38,13 +38,14 @@ namespace FluentCli.Sandbox
     public class DefaultCommandOptions
     {
         public string FirstName { get; set; }
+        public int Age { get; set; }
     }
 
     public class DefaultCommandHandler : ICommandHandler<DefaultCommandOptions>
     {
         public Task Execute(DefaultCommandOptions options)
         {
-            Console.WriteLine($"Default: {options.FirstName}");
+            Console.WriteLine($"Default: {options.FirstName} is {options.Age} old");
             return Task.CompletedTask;
         }
     }

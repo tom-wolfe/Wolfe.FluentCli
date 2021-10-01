@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using FluentCli.Mapping;
@@ -9,10 +10,17 @@ namespace FluentCli.Core
     internal class OptionsBuilder<TOptions> : IOptionsBuilder<TOptions>
     {
         private IPropertyNamingStrategy _namingStrategy;
+        private ITypeConverter _typeConverter;
 
         public IOptionsBuilder<TOptions> UseNamingStrategy(IPropertyNamingStrategy strategy)
         {
             _namingStrategy = strategy;
+            return this;
+        }
+
+        public IOptionsBuilder<TOptions> UseTypeConverter<T>(ITypeConverter converter)
+        {
+            _typeConverter = converter;
             return this;
         }
 
@@ -34,7 +42,7 @@ namespace FluentCli.Core
             return new CliOptions()
             {
                 Options = options,
-                OptionMap = new AutomaticOptionMap(type, map)
+                OptionMap = new AutomaticOptionMap(type, map, _typeConverter)
             };
         }
 

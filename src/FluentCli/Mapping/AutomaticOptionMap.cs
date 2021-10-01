@@ -8,12 +8,14 @@ namespace FluentCli.Mapping
     {
         private readonly Type _model;
         private readonly Dictionary<string, PropertyInfo> _propertyMap;
+        private readonly ITypeConverter _typeConverter;
 
-        public AutomaticOptionMap(Type model, Dictionary<string, PropertyInfo> map)
+        public AutomaticOptionMap(Type model, Dictionary<string, PropertyInfo> map, ITypeConverter typeConverter)
         {
             _model = model;
             _propertyMap = map;
-        }
+            _typeConverter = typeConverter ?? new DefaultTypeConverter();
+        } 
 
         public object CreateFrom(Dictionary<string, string> values)
         {
@@ -29,7 +31,8 @@ namespace FluentCli.Mapping
                 var property = _propertyMap[key];
                 if (property == null) continue;
 
-                property.SetValue(model, value);
+                var propValue = _typeConverter.Convert(value, property.PropertyType);
+                property.SetValue(model, propValue);
             }
         }
     }
