@@ -5,7 +5,6 @@ namespace FluentCli.Mapping
 {
     internal class DefaultTypeConverter : ITypeConverter
     {
-
         private static readonly Dictionary<Type, Func<string, object>> TypeConverters = new()
         {
             //{ typeof(int), v => int.Parse(v) },
