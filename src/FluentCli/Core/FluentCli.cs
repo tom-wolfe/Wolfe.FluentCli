@@ -57,16 +57,26 @@ namespace FluentCli.Core
         {
             if (cliCommand.Options == null) { return null; }
 
+            var options = cliCommand.Options.Options;
+            var normalizedOptions = new Dictionary<string, string>();
+
+            // Normalize options by long name in the original casing.
+            foreach (var (key, value) in instruction.Options)
+            {
+                var opt = options.Find(o => o.LongName.Equals(key, StringComparison.OrdinalIgnoreCase)
+                                            || o.ShortName.Equals(key, StringComparison.OrdinalIgnoreCase));
+                if (opt == null) throw new InvalidCommandOptionException(cliCommand.Name, key);
+                normalizedOptions.Add(opt.LongName, value);
+            }
+
             // Validate all required options have been passed.
-            var missingRequiredOptions = cliCommand.Options.Options
-                .Where(o => o.Required && !instruction.Options.Keys.Contains(o.LongName, StringComparer.OrdinalIgnoreCase))
+            var missingRequiredOptions = options
+                .Where(o => o.Required && !normalizedOptions.Keys.Contains(o.LongName))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
                 throw new MissingRequiredCommandOptionsException(missingRequiredOptions);
 
-            var options = cliCommand.Options?.OptionMap?.CreateFrom(instruction.Options);
-
-            return options;
+            return cliCommand.Options.OptionMap.CreateFrom(normalizedOptions);
         }
 
         protected virtual Task ExecuteCore(CliCommand cliCommand, object options)
