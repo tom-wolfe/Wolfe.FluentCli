@@ -2,9 +2,9 @@
 
 namespace FluentCli
 {
-    public interface ICommandHandler : ICommandHandler<object>
+    public interface ICommandHandler
     {
-
+        Task Execute();
     }
 
     public interface ICommandHandler<in TOptions>

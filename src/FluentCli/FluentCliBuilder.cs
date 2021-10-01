@@ -9,8 +9,7 @@ namespace FluentCli
 {
     public class FluentCliBuilder : IFluentCliBuilder
     {
-        private Type _handlerType;
-        private Type _optionsType;
+        private IFluentCliDefaultCommandBuilder _defaultBuilder ;
         private readonly List<FluentCliCommand> _subCommands = new();
         private IFluentCliParser _parser = new FluentCliParser();
         private IServiceProvider _serviceProvider = new DefaultServiceProvider();
@@ -18,40 +17,6 @@ namespace FluentCli
         protected FluentCliBuilder() { }
 
         public static IFluentCliBuilder Create() => new FluentCliBuilder();
-
-        public IFluentCli Build()
-        {
-            var rootCommand = new FluentCliCommand()
-            {
-                Name = "",
-                Handler = _handlerType,
-                Options = _optionsType,
-                SubCommands = _subCommands
-            };
-            return new Core.FluentCli(_serviceProvider, _parser, rootCommand);
-        }
-
-        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler =>
-            AddCommand<THandler, object>(name, command);
-
-        public IFluentCliBuilder AddCommand<THandler, TOptions>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler<TOptions>
-        {
-            var builder = FluentCliCommandBuilder.Create<THandler, TOptions>(name);
-            command?.Invoke(builder);
-            var cmd = builder.Build();
-            _subCommands.Add(cmd);
-            return this;
-        }
-
-        public IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler =>
-            WithDefaultHandler<THandler, object>();
-
-        public IFluentCliBuilder WithDefaultHandler<THandler, TOptions>() where THandler : ICommandHandler<TOptions>
-        {
-            _handlerType = typeof(THandler);
-            _optionsType = typeof(TOptions);
-            return this;
-        }
 
         public IFluentCliBuilder WithParser(IFluentCliParser parser)
         {
@@ -64,15 +29,44 @@ namespace FluentCli
             _serviceProvider = serviceProvider;
             return this;
         }
+
+        public IFluentCliBuilder WithDefaultCommand<THandler>(Action<IFluentCliDefaultCommandBuilder> command = null)
+        {
+            var builder = FluentCliCommandBuilder.Create<THandler>("");
+            command?.Invoke(builder);
+            _defaultBuilder = builder;
+            return this;
+        }
+
+        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command)
+        {
+            var cmd = BuildCommand<THandler>(name, command);
+            _subCommands.Add(cmd);
+            return this;
+        }
+
+        public IFluentCli Build()
+        {
+            var defaultBuilder = _defaultBuilder ?? FluentCliCommandBuilder.Create<object>("");
+            var defaultCommand = defaultBuilder.Build();
+            defaultCommand.SubCommands.AddRange(_subCommands);
+            return new Core.FluentCli(_serviceProvider, _parser, defaultCommand);
+        }
+
+        private static FluentCliCommand BuildCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command)
+        {
+            var builder = FluentCliCommandBuilder.Create<THandler>(name);
+            command?.Invoke(builder);
+            return builder.Build();
+        }
     }
 
     public interface IFluentCliBuilder
     {
-        IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler;
-        IFluentCliBuilder AddCommand<THandler, TOptions>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler<TOptions>;
         IFluentCliBuilder WithServiceProvider(IServiceProvider serviceProvider);
         IFluentCliBuilder WithParser(IFluentCliParser parser);
-        IFluentCliBuilder WithDefaultHandler<THandler>() where THandler : ICommandHandler;
+        IFluentCliBuilder WithDefaultCommand<THandler>(Action<IFluentCliDefaultCommandBuilder> command = null);
+        IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null);
         IFluentCli Build();
     }
 }

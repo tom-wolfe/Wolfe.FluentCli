@@ -3,6 +3,7 @@ using FluentCli.Models;
 using FluentCli.Parser;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -53,6 +54,8 @@ namespace FluentCli.Core
 
         protected virtual object ResolveOptions(FluentCliInstruction instruction, FluentCliCommand command)
         {
+            if (command.Options == null) { return null; }
+
             var options = _serviceProvider.GetService(command.Options) ?? Activator.CreateInstance(command.Options);
             // TODO: Bind fields.
             return options;
@@ -65,9 +68,13 @@ namespace FluentCli.Core
             var handlerType = handler.GetType();
             // TODO: Validate handler type.
 
-            var invokeResult = handlerType.InvokeMember(nameof(ICommandHandler<object>.Execute), BindingFlags.InvokeMethod, null, handler, new []{ options });
+            var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute), BindingFlags.Public | BindingFlags.Instance);
+            if (executeMethod == null)
+                throw new InvalidCommandHandlerException(command.Name);
 
-            var invokeTask = invokeResult as Task;
+            var parameters = executeMethod.GetParameters();
+
+            var invokeTask = executeMethod.Invoke(handler, parameters.Any() ? new[] { options } : null) as Task;
             // TODO: Validate return task;
 
             return invokeTask;

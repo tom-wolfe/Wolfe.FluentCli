@@ -8,8 +8,14 @@ namespace FluentCli.Sandbox
         static async Task Main()
         {
             var cli = FluentCliBuilder.Create()
-                .WithDefaultHandler<DefaultCommandHandler>()
-                .AddCommand<HelloCommandHandler, HelloCommandOptions>("hello", hello => hello
+                .WithDefaultCommand<DefaultCommandHandler>(def => def
+                    .WithOptions<HelloCommandOptions>()
+                )
+                .AddCommand<HelloCommandHandler>("hello", hello => hello
+                    .AddCommand<FooCommandHandler>("foo", foo => foo
+                        .AddCommand<BarCommandHandler>("bar")
+                    )
+                    .WithOptions<HelloCommandOptions>()
                     .AddCommand<FooCommandHandler>("foo", foo => foo
                         .AddCommand<BarCommandHandler>("bar")
                     )
@@ -19,7 +25,8 @@ namespace FluentCli.Sandbox
                 )
                 .Build();
 
-            // await cli.Execute("");
+            await cli.Execute("");
+            await cli.Execute("--name Tom");
             await cli.Execute("hello --name Tom");
             await cli.Execute("hello foo");
             await cli.Execute("hello foo bar");
@@ -29,11 +36,11 @@ namespace FluentCli.Sandbox
         }
     }
 
-    public class DefaultCommandHandler : ICommandHandler
+    public class DefaultCommandHandler : ICommandHandler<HelloCommandOptions>
     {
-        public Task Execute(object options)
+        public Task Execute(HelloCommandOptions options)
         {
-            Console.WriteLine("Default");
+            Console.WriteLine($"Default: {options.Name}");
             return Task.CompletedTask;
         }
     }
@@ -54,7 +61,7 @@ namespace FluentCli.Sandbox
 
     public class FooCommandHandler : ICommandHandler
     {
-        public Task Execute(object options)
+        public Task Execute()
         {
             Console.WriteLine("Foo");
             return Task.CompletedTask;
@@ -63,7 +70,7 @@ namespace FluentCli.Sandbox
 
     public class BarCommandHandler : ICommandHandler
     {
-        public Task Execute(object options)
+        public Task Execute()
         {
             Console.WriteLine("Bar");
             return Task.CompletedTask;

@@ -4,23 +4,21 @@ using System.Collections.Generic;
 
 namespace FluentCli.Core
 {
-    public class FluentCliCommandBuilder : IFluentCliCommandBuilder
+    public class FluentCliCommandBuilder : IFluentCliCommandBuilder, IFluentCliCommandBuilderNoOptions, IFluentCliDefaultCommandBuilder
     {
         private readonly string _name;
         private readonly Type _handlerType;
-        private readonly Type _optionsType;
         private readonly List<FluentCliCommand> _commands = new();
 
-        protected FluentCliCommandBuilder(string name, Type handlerType, Type optionsType)
+        private Type _optionsType;
+
+        protected FluentCliCommandBuilder(string name, Type handlerType)
         {
             _name = name;
             _handlerType = handlerType;
-            _optionsType = optionsType;
         }
 
-        public static IFluentCliCommandBuilder Create<THandler>(string name) where THandler : ICommandHandler => Create<THandler, object>(name);
-        public static IFluentCliCommandBuilder Create<THandler, TOptions>(string name) where THandler : ICommandHandler<TOptions> =>
-            new FluentCliCommandBuilder(name, typeof(THandler), typeof(TOptions));
+        public static FluentCliCommandBuilder Create<THandler>(string name) => new (name, typeof(THandler));
 
         public FluentCliCommand Build() => new()
         {
@@ -29,6 +27,14 @@ namespace FluentCli.Core
             Options = _optionsType,
             SubCommands = _commands
         };
+
+        IFluentCliDefaultCommandBuilderNoOptions IFluentCliDefaultCommandBuilder.WithOptions<TOptions>() => WithOptions<TOptions>();
+
+        public IFluentCliCommandBuilderNoOptions WithOptions<TOptions>()
+        {
+            _optionsType = typeof(TOptions);
+            return this;
+        }
 
         public IFluentCliCommandBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler
         {
@@ -40,9 +46,23 @@ namespace FluentCli.Core
         }
     }
 
-    public interface IFluentCliCommandBuilder
+    public interface IFluentCliDefaultCommandBuilderNoOptions
+    {
+        FluentCliCommand Build();
+    }
+
+    public interface IFluentCliDefaultCommandBuilder : IFluentCliDefaultCommandBuilderNoOptions
+    {
+        IFluentCliDefaultCommandBuilderNoOptions WithOptions<TOptions>();
+    }
+
+    public interface IFluentCliCommandBuilder : IFluentCliCommandBuilderNoOptions
+    {
+        IFluentCliCommandBuilderNoOptions WithOptions<TOptions>();
+    }
+
+    public interface IFluentCliCommandBuilderNoOptions : IFluentCliDefaultCommandBuilderNoOptions
     {
         IFluentCliCommandBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null) where THandler : ICommandHandler;
-        FluentCliCommand Build();
     }
 }
