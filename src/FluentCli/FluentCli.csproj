@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <Authors>Thomas R. Wolfe</Authors>
+    <Copyright>2021</Copyright>
   </PropertyGroup>
 
 </Project>
