@@ -9,8 +9,8 @@ namespace FluentCli
 {
     public class FluentCliBuilder : IFluentCliBuilder
     {
-        private IFluentCliDefaultCommandBuilder _defaultBuilder;
-        private readonly List<FluentCliCommand> _subCommands = new();
+        private IDefaultCommandBuilder _defaultBuilder;
+        private readonly List<CliCommand> _subCommands = new();
         private IFluentCliParser _parser = new FluentCliParser();
         private IServiceProvider _serviceProvider = new DefaultServiceProvider();
 
@@ -30,15 +30,15 @@ namespace FluentCli
             return this;
         }
 
-        public IFluentCliBuilder WithDefaultCommand<THandler>(Action<IFluentCliDefaultCommandBuilder> command = null)
+        public IFluentCliBuilder WithDefaultCommand<THandler>(Action<IDefaultCommandBuilder> command = null)
         {
-            var builder = new FluentCliCommandBuilder("", typeof(THandler));
+            var builder = new CommandBuilder("", typeof(THandler));
             command?.Invoke(builder);
             _defaultBuilder = builder;
             return this;
         }
 
-        public IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command)
+        public IFluentCliBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command)
         {
             var cmd = BuildCommand<THandler>(name, command);
             _subCommands.Add(cmd);
@@ -47,15 +47,15 @@ namespace FluentCli
 
         public IFluentCli Build()
         {
-            var defaultBuilder = _defaultBuilder ?? new FluentCliCommandBuilder();
+            var defaultBuilder = _defaultBuilder ?? new CommandBuilder();
             var defaultCommand = defaultBuilder.Build();
             defaultCommand.SubCommands.AddRange(_subCommands);
             return new Core.FluentCli(_serviceProvider, _parser, defaultCommand);
         }
 
-        private static FluentCliCommand BuildCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command)
+        private static CliCommand BuildCommand<THandler>(string name, Action<ICommandBuilder> command)
         {
-            var builder = new FluentCliCommandBuilder(name, typeof(THandler));
+            var builder = new CommandBuilder(name, typeof(THandler));
             command?.Invoke(builder);
             return builder.Build();
         }
@@ -65,8 +65,8 @@ namespace FluentCli
     {
         IFluentCliBuilder WithServiceProvider(IServiceProvider serviceProvider);
         IFluentCliBuilder WithParser(IFluentCliParser parser);
-        IFluentCliBuilder WithDefaultCommand<THandler>(Action<IFluentCliDefaultCommandBuilder> command = null);
-        IFluentCliBuilder AddCommand<THandler>(string name, Action<IFluentCliCommandBuilder> command = null);
+        IFluentCliBuilder WithDefaultCommand<THandler>(Action<IDefaultCommandBuilder> command = null);
+        IFluentCliBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
         IFluentCli Build();
     }
 }

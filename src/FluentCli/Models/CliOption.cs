@@ -1,6 +1,6 @@
 ﻿namespace FluentCli.Models
 {
-    public class FluentCliOption
+    public class CliOption
     {
         public string ShortName { get; init; }
         public string LongName { get; init; }

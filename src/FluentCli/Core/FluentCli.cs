@@ -13,13 +13,13 @@ namespace FluentCli.Core
     {
         private readonly IFluentCliParser _parser;
         private readonly IServiceProvider _serviceProvider;
-        private readonly FluentCliCommand _rootCommand;
+        private readonly CliCommand _rootCliCommand;
 
-        public FluentCli(IServiceProvider serviceProvider, IFluentCliParser parser, FluentCliCommand rootCommand)
+        public FluentCli(IServiceProvider serviceProvider, IFluentCliParser parser, CliCommand rootCliCommand)
         {
             _parser = parser;
             _serviceProvider = serviceProvider;
-            _rootCommand = rootCommand;
+            _rootCliCommand = rootCliCommand;
         }
 
         public Task Execute(string args)
@@ -38,9 +38,9 @@ namespace FluentCli.Core
             return ExecuteCore(command, options);
         }
 
-        protected virtual FluentCliCommand ResolveCommand(FluentCliInstruction instruction)
+        protected virtual CliCommand ResolveCommand(CliInstruction instruction)
         {
-            var currentCommand = _rootCommand;
+            var currentCommand = _rootCliCommand;
             var currentCommandChain = new List<string>();
             foreach (var commandName in instruction.Commands)
             {
@@ -53,33 +53,33 @@ namespace FluentCli.Core
             return currentCommand;
         }
 
-        protected virtual object ResolveOptions(FluentCliInstruction instruction, FluentCliCommand command)
+        protected virtual object ResolveOptions(CliInstruction instruction, CliCommand cliCommand)
         {
-            if (command.Options == null) { return null; }
+            if (cliCommand.Options == null) { return null; }
 
             // Validate all required options have been passed.
-            var missingRequiredOptions = command.Options.Options
+            var missingRequiredOptions = cliCommand.Options.Options
                 .Where(o => o.Required && !instruction.Options.Keys.Contains(o.LongName, StringComparer.OrdinalIgnoreCase))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
                 throw new MissingRequiredCommandOptionsException(missingRequiredOptions);
 
-            var options = command.Options?.OptionsMap?.Invoke(instruction.Options);
+            var options = cliCommand.Options?.OptionMap?.CreateFrom(instruction.Options);
 
             return options;
         }
 
-        protected virtual Task ExecuteCore(FluentCliCommand command, object options)
+        protected virtual Task ExecuteCore(CliCommand cliCommand, object options)
         {
-            var handler = _serviceProvider.GetService(command.Handler) ??
-                          throw new InvalidCommandHandlerException(command.Name);
+            var handler = _serviceProvider.GetService(cliCommand.Handler) ??
+                          throw new InvalidCommandHandlerException(cliCommand.Name);
 
             var handlerType = handler.GetType();
 
             var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
                 BindingFlags.Public | BindingFlags.Instance);
             if (executeMethod == null)
-                throw new InvalidCommandHandlerException(command.Name);
+                throw new InvalidCommandHandlerException(cliCommand.Name);
 
             var parameters = executeMethod.GetParameters();
 

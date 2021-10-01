@@ -1,11 +1,22 @@
 ﻿using System;
+using System.Reflection;
 using System.Text;
 
-namespace FluentCli.Extensions
+namespace FluentCli.Mapping
 {
-    internal static class StringExtensions
+    public class KebabCasePropertyNamingStrategy : IPropertyNamingStrategy
     {
-        public static string ToKebabCase(this string input)
+        public string GetShortName(PropertyInfo property)
+        {
+            return property.Name[..1].ToLowerInvariant();
+        }
+
+        public string GetLongName(PropertyInfo property)
+        {
+            return ToKebabCase(property.Name);
+        }
+
+        private static string ToKebabCase(string input)
         {
             if (input == null) throw new ArgumentNullException(nameof(input));
             if (input.Length < 2) return input;

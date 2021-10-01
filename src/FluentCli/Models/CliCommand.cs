@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace FluentCli.Models
 {
-    public class FluentCliCommand
+    public class CliCommand
     {
         public string Name { get; init; }
         public Type Handler { get; init; }
-        public FluentCliOptions Options { get; init; }
-        public List<FluentCliCommand> SubCommands { get; init; } = new();
+        public CliOptions Options { get; init; }
+        public List<CliCommand> SubCommands { get; init; } = new();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentCli.Mapping;
 
 namespace FluentCli.Sandbox
 {
@@ -8,39 +9,40 @@ namespace FluentCli.Sandbox
         static async Task Main()
         {
             var cli = FluentCliBuilder.Create()
-                .WithDefaultCommand<DefaultCommandHandler>(def => def
-                    .WithOptions<HelloCommandOptions>()
+                .WithDefaultCommand<DefaultCommandHandler>(command => command
+                    .WithOptions<DefaultCommandOptions>(options => options
+                        .UseNamingStrategy(new KebabCasePropertyNamingStrategy())
+                    )
                 )
                 .AddCommand<HelloCommandHandler>("hello", hello => hello
-                    .WithOptions<HelloCommandOptions>(options => options
+                    .WithManualOptions<HelloCommandOptions>(options => options
                         .AddOption("n", "name", true)
-                        .WithMap(opt => new HelloCommandOptions
+                        .UseMap(opt => new HelloCommandOptions
                         {
                             FirstName = opt["name"]
                         })
                     )
-                    .AddCommand<FooCommandHandler>("foo", foo => foo
-                        .AddCommand<BarCommandHandler>("bar")
-                    )
-                    .AddCommand<BarCommandHandler>("bar", bar => bar
-                        .AddCommand<FooCommandHandler>("foo")
-                    )
+                    .AddCommand<FooCommandHandler>("foo")
+                    .AddCommand<BarCommandHandler>("bar")
                 )
                 .Build();
 
             await cli.Execute("--first-name Tom");
             await cli.Execute("hello --name Tom");
             await cli.Execute("hello foo");
-            await cli.Execute("hello foo bar");
             await cli.Execute("hello bar");
-            await cli.Execute("hello bar foo");
             Console.ReadLine();
         }
     }
 
-    public class DefaultCommandHandler : ICommandHandler<HelloCommandOptions>
+    public class DefaultCommandOptions
     {
-        public Task Execute(HelloCommandOptions options)
+        public string FirstName { get; set; }
+    }
+
+    public class DefaultCommandHandler : ICommandHandler<DefaultCommandOptions>
+    {
+        public Task Execute(DefaultCommandOptions options)
         {
             Console.WriteLine($"Default: {options.FirstName}");
             return Task.CompletedTask;
@@ -49,6 +51,7 @@ namespace FluentCli.Sandbox
 
     public class HelloCommandOptions
     {
+        [FluentCliOption("n", "name")]
         public string FirstName { get; set; }
     }
 

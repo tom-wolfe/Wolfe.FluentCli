@@ -9,19 +9,19 @@ namespace FluentCli.Parser
     {
         private static readonly string[] OptionMarkers = { "--", "-", "/" };
 
-        public FluentCliInstruction Parse(string args)
+        public CliInstruction Parse(string args)
         {
             // TODO: Make this more flexible to allow for quoted strings.
             var argsArray = args.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             return ParseCore(argsArray);
         }
 
-        public FluentCliInstruction Parse(string[] args)
+        public CliInstruction Parse(string[] args)
         {
             return ParseCore(args);
         }
 
-        private static FluentCliInstruction ParseCore(string[] args)
+        private static CliInstruction ParseCore(IEnumerable<string> args)
         {
             var commands = new List<string>();
             var options = new Dictionary<string, string>();
@@ -43,7 +43,7 @@ namespace FluentCli.Parser
                 }
             }
 
-            return new FluentCliInstruction()
+            return new CliInstruction()
             {
                 Commands = commands.ToArray(),
                 Options = options
