@@ -4,7 +4,8 @@ namespace Wolfe.FluentCli.Models
 {
     public class CliInstruction
     {
+        public CliArgument Default { get; init; }
         public string[] Commands { get; init; }
-        public Dictionary<string, string> Options { get; init; }
+        public Dictionary<string, CliArgument> Options { get; init; }
     }
 }

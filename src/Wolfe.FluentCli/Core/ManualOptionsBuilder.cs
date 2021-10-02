@@ -31,7 +31,7 @@ namespace Wolfe.FluentCli.Core
             return this;
         }
 
-        public IManualOptionsBuilder<TOptions> UseMap(Func<Dictionary<string, string>, TOptions> map)
+        public IManualOptionsBuilder<TOptions> UseMap(Func<Dictionary<string, CliArgument>, TOptions> map)
         {
             _optionMap = new ManualOptionMap<TOptions>(map);
             return this;
@@ -47,7 +47,7 @@ namespace Wolfe.FluentCli.Core
     {
         IManualOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required);
         IManualOptionsBuilder<TOptions> AddOption(CliOption option);
-        IManualOptionsBuilder<TOptions> UseMap(Func<Dictionary<string, string>, TOptions> map);
+        IManualOptionsBuilder<TOptions> UseMap(Func<Dictionary<string, CliArgument>, TOptions> map);
         CliOptions Build();
     }
 }

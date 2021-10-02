@@ -11,11 +11,11 @@ namespace Wolfe.FluentCli.Core
 {
     internal class FluentCli : IFluentCli
     {
-        private readonly IFluentCliParser _parser;
+        private readonly ICliParser _parser;
         private readonly IServiceProvider _serviceProvider;
         private readonly CliCommand _rootCliCommand;
 
-        public FluentCli(IServiceProvider serviceProvider, IFluentCliParser parser, CliCommand rootCliCommand)
+        public FluentCli(IServiceProvider serviceProvider, ICliParser parser, CliCommand rootCliCommand)
         {
             _parser = parser;
             _serviceProvider = serviceProvider;
@@ -74,7 +74,7 @@ namespace Wolfe.FluentCli.Core
             if (command.Options == null) { return null; }
 
             var options = command.Options.Options;
-            var normalizedOptions = new Dictionary<string, string>();
+            var normalizedOptions = new Dictionary<string, CliArgument>();
 
             // Normalize options by long name in the original casing.
             foreach (var (key, value) in instruction.Options)

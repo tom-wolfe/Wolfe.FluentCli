@@ -10,14 +10,14 @@ namespace Wolfe.FluentCli
     {
         private IDefaultCommandBuilder _defaultBuilder;
         private readonly List<CliCommand> _subCommands = new();
-        private IFluentCliParser _parser = new FluentCliParser();
+        private ICliParser _parser = new CliParser();
         private IServiceProvider _serviceProvider = new DefaultServiceProvider();
 
         protected FluentCliBuilder() { }
 
         public static IFluentCliBuilder Create() => new FluentCliBuilder();
 
-        public IFluentCliBuilder WithParser(IFluentCliParser parser)
+        public IFluentCliBuilder WithParser(ICliParser parser)
         {
             _parser = parser;
             return this;
@@ -66,7 +66,7 @@ namespace Wolfe.FluentCli
     public interface IFluentCliBuilder
     {
         IFluentCliBuilder WithServiceProvider(IServiceProvider serviceProvider);
-        IFluentCliBuilder WithParser(IFluentCliParser parser);
+        IFluentCliBuilder WithParser(ICliParser parser);
         IFluentCliBuilder WithDefaultCommand<THandler>(Action<IDefaultCommandBuilder> command = null);
         IFluentCliBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
         IFluentCliBuilder AddCommand<THandler, TArgs>(string name);

@@ -5,7 +5,7 @@ using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Parser
 {
-    internal class FluentCliParser : IFluentCliParser
+    internal class CliParser : ICliParser
     {
         private const char STRING_MARKER = '"';
         private static readonly string[] OptionMarkers = { "--", "-", "/" };
@@ -63,7 +63,7 @@ namespace Wolfe.FluentCli.Parser
         private static CliInstruction ParseCore(IEnumerable<string> args)
         {
             var commands = new List<string>();
-            var options = new Dictionary<string, string>();
+            var options = new Dictionary<string, CliArgument>();
             var argQueue = new Queue<string>(args);
 
             while (argQueue.Count > 0)
@@ -73,7 +73,7 @@ namespace Wolfe.FluentCli.Parser
                 {
                     // If the next arg is another option, default to true, otherwise consume the option value;
                     var optionValue = argQueue.Count == 0 || IsOption(argQueue.Peek()) ? true.ToString() : argQueue.Dequeue();
-                    options.Add(StripOptionMarker(current), optionValue);
+                    options.Add(StripOptionMarker(current), new CliArgument(optionValue));
                 }
                 else
                 {
