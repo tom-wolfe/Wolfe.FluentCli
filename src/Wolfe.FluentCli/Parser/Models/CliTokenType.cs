@@ -6,7 +6,7 @@
         ShortArgumentMarker,
         LongArgumentMarker,
         Assignment,
-        QuotedString,
+        StringLiteral,
         Eof,
     }
 }

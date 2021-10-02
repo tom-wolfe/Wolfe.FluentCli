@@ -9,6 +9,7 @@ namespace Wolfe.FluentCli.Parser
     {
         private const int EOF = -1;
         private const char ASSIGNMENT = '=';
+        private const char ESCAPE = '\\';
         private static readonly string StringMarkers = "\"'";
         private static readonly string ArgMarkers = "-/";
 
@@ -51,9 +52,9 @@ namespace Wolfe.FluentCli.Parser
         private CliToken ScanQuotedString()
         {
             var marker = (char)_input.Read();
-            var quotedString = SeekUntil(c => c == marker);
+            var quotedString = SeekUntil(c => c == marker, allowEscape: true);
             _input.Read(); // Consume the closing marker
-            return new CliToken(CliTokenType.QuotedString, quotedString);
+            return new CliToken(CliTokenType.StringLiteral, quotedString);
         }
 
         private CliToken ScanAssignment()
@@ -80,7 +81,7 @@ namespace Wolfe.FluentCli.Parser
             return new CliToken(type, marker);
         }
 
-        private string SeekUntil(Func<char, bool> condition)
+        private string SeekUntil(Func<char, bool> condition, bool allowEscape = false)
         {
             var buffer = new StringBuilder();
             while (true)
@@ -88,6 +89,12 @@ namespace Wolfe.FluentCli.Parser
                 var cur = _input.Peek();
                 if (cur == EOF) { break; }
                 var curChar = (char)cur;
+                if (curChar == ESCAPE && allowEscape)
+                {
+                    _input.Read(); // Consume the escape character.
+                    buffer.Append((char)_input.Read());
+                    continue;
+                }
                 if (condition(curChar)) { break; }
                 buffer.Append(curChar);
                 _input.Read();

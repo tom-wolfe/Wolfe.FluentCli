@@ -39,7 +39,7 @@ namespace Wolfe.FluentCli.Tests.Parser
         public void QuotedString_ReturnsQuotedString()
         {
             new CliScanner("\"foo bar\"")
-                .AssertNextToken(CliTokenType.QuotedString, "foo bar");
+                .AssertNextToken(CliTokenType.StringLiteral, "foo bar");
         }
 
         [Fact]
@@ -70,6 +70,20 @@ namespace Wolfe.FluentCli.Tests.Parser
         }
 
         [Fact]
+        public void AlternateStringMarkers_DoesNotTerminate()
+        {
+            new CliScanner("'single \"quoted\" string'")
+                .AssertNextToken(CliTokenType.StringLiteral, "single \"quoted\" string");
+        }
+
+        [Fact]
+        public void EscapedQuote_DoesNotTerminate()
+        {
+            new CliScanner("'George\\'s Marvelous Medicine'")
+                .AssertNextToken(CliTokenType.StringLiteral, "George's Marvelous Medicine");
+        }
+
+        [Fact]
         public void Complex_ScansCorrectly()
         {
             new CliScanner("--foo-bar=blah \"test spaces\" /arg name")
@@ -77,7 +91,7 @@ namespace Wolfe.FluentCli.Tests.Parser
                 .AssertNextToken(CliTokenType.Identifier, "foo-bar")
                 .AssertNextToken(CliTokenType.Assignment, "=")
                 .AssertNextToken(CliTokenType.Identifier, "blah")
-                .AssertNextToken(CliTokenType.QuotedString, "test spaces")
+                .AssertNextToken(CliTokenType.StringLiteral, "test spaces")
                 .AssertNextToken(CliTokenType.ShortArgumentMarker, "/")
                 .AssertNextToken(CliTokenType.Identifier, "arg")
                 .AssertNextToken(CliTokenType.Identifier, "name");
