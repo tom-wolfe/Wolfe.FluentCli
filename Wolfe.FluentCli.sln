@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfe.FluentCli", "src\Wolfe.FluentCli\Wolfe.FluentCli.csproj", "{A90CE33B-5961-4062-8B0E-720377F5C2F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli", "src\Wolfe.FluentCli\Wolfe.FluentCli.csproj", "{A90CE33B-5961-4062-8B0E-720377F5C2F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfe.FluentCli.Sandbox", "src\Wolfe.FluentCli.Sandbox\Wolfe.FluentCli.Sandbox.csproj", "{95DFB247-DC08-4C82-8160-DD114F257A71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli.Sandbox", "src\Wolfe.FluentCli.Sandbox\Wolfe.FluentCli.Sandbox.csproj", "{95DFB247-DC08-4C82-8160-DD114F257A71}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfe.FluentCli.Tests", "src\FluentCli.Sandbox\Wolfe.FluentCli.Tests\Wolfe.FluentCli.Tests.csproj", "{A57555DB-9812-4AF7-91F1-F53C7120DD05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{95DFB247-DC08-4C82-8160-DD114F257A71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95DFB247-DC08-4C82-8160-DD114F257A71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95DFB247-DC08-4C82-8160-DD114F257A71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
