@@ -36,14 +36,14 @@ namespace Wolfe.FluentCli.Core
         protected virtual Task ExecuteCore(CliContext context, object options)
         {
             var handler = _serviceProvider.GetService(context.Command.Handler) ??
-                          throw new InvalidCommandHandlerException(context.Command.Name);
+                          throw new CommandHandlerException(context.Command.Name, "Unable to resolve from service provider.");
 
             var handlerType = handler.GetType();
 
             var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
                 BindingFlags.Public | BindingFlags.Instance);
             if (executeMethod == null)
-                throw new InvalidCommandHandlerException(context.Command.Name);
+                throw new CommandHandlerException(context.Command.Name, $"Unable to find appropriate {nameof(ICommandHandler.Execute)} method.");
 
             var args = new List<object> { context };
 
@@ -62,7 +62,7 @@ namespace Wolfe.FluentCli.Core
             {
                 var nextCommand = currentCommand.SubCommands
                     .Find(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
-                currentCommand = nextCommand ?? throw new MissingCommandException(currentCommandChain, commandName);
+                currentCommand = nextCommand ?? throw new CommandNotFoundException(currentCommandChain, commandName);
                 currentCommandChain.Add(commandName);
             }
 
@@ -90,7 +90,7 @@ namespace Wolfe.FluentCli.Core
                 .Where(o => o.Required && !normalizedOptions.Keys.Contains(o.LongName))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
-                throw new MissingRequiredCommandOptionsException(missingRequiredOptions);
+                throw new MissingCommandOptionsException(missingRequiredOptions);
 
             return command.Options.OptionMap.CreateFrom(normalizedOptions);
         }

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Wolfe.FluentCli.Exceptions
 {
     [Serializable]
-    internal class DuplicateCommandOptionException : Exception
+    public class DuplicateCommandOptionException : Exception
     {
         public DuplicateCommandOptionException() { }
 
