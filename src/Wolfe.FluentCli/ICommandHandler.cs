@@ -4,11 +4,11 @@ namespace Wolfe.FluentCli
 {
     public interface ICommandHandler
     {
-        Task Execute();
+        Task Execute(CliContext context);
     }
 
     public interface ICommandHandler<in TOptions>
     {
-        Task Execute(TOptions options = default);
+        Task Execute(CliContext context, TOptions options = default);
     }
 }

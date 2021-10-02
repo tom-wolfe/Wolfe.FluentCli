@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FluentCli\FluentCli.csproj" />
+    <ProjectReference Include="..\Wolfe.FluentCli\Wolfe.FluentCli.csproj" />
   </ItemGroup>
 
 </Project>
