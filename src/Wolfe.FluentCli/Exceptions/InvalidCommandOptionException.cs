@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Wolfe.FluentCli.Exceptions
 {
     [Serializable]
-    internal class InvalidCommandOptionException : Exception
+    public class InvalidCommandOptionException : Exception
     {
         public InvalidCommandOptionException() { }
 

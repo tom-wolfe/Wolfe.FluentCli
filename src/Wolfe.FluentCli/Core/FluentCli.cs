@@ -22,20 +22,36 @@ namespace Wolfe.FluentCli.Core
             _rootCliCommand = rootCliCommand;
         }
 
-        public Task Execute(string args)
+        public Task Execute(string args) => ExecuteInstruction(_parser.Parse(args));
+        public Task Execute(params string[] args) => ExecuteInstruction(_parser.Parse(args));
+
+        protected virtual Task ExecuteInstruction(CliInstruction instruction)
         {
-            var instruction = _parser.Parse(args);
             var command = ResolveCommand(instruction);
+            var context = BuildContext(instruction, command);
             var options = ResolveOptions(instruction, command);
-            return ExecuteCore(command, options);
+            return ExecuteCore(context, options);
         }
 
-        public Task Execute(params string[] args)
+        protected virtual Task ExecuteCore(CliContext context, object options)
         {
-            var instruction = _parser.Parse(args);
-            var command = ResolveCommand(instruction);
-            var options = ResolveOptions(instruction, command);
-            return ExecuteCore(command, options);
+            var handler = _serviceProvider.GetService(context.Command.Handler) ??
+                          throw new CommandHandlerException(context.Command.Name, "Unable to resolve from service provider.");
+
+            var handlerType = handler.GetType();
+
+            var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
+                BindingFlags.Public | BindingFlags.Instance);
+            if (executeMethod == null)
+                throw new CommandHandlerException(context.Command.Name, $"Unable to find appropriate {nameof(ICommandHandler.Execute)} method.");
+
+            var args = new List<object> { context };
+
+            if (executeMethod.GetParameters().Length > 1)
+                args.Add(options);
+
+            var invokeTask = executeMethod.Invoke(handler, args.ToArray()) as Task;
+            return invokeTask;
         }
 
         protected virtual CliCommand ResolveCommand(CliInstruction instruction)
@@ -46,18 +62,18 @@ namespace Wolfe.FluentCli.Core
             {
                 var nextCommand = currentCommand.SubCommands
                     .Find(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
-                currentCommand = nextCommand ?? throw new MissingCommandException(currentCommandChain, commandName);
+                currentCommand = nextCommand ?? throw new CommandNotFoundException(currentCommandChain, commandName);
                 currentCommandChain.Add(commandName);
             }
 
             return currentCommand;
         }
 
-        protected virtual object ResolveOptions(CliInstruction instruction, CliCommand cliCommand)
+        protected virtual object ResolveOptions(CliInstruction instruction, CliCommand command)
         {
-            if (cliCommand.Options == null) { return null; }
+            if (command.Options == null) { return null; }
 
-            var options = cliCommand.Options.Options;
+            var options = command.Options.Options;
             var normalizedOptions = new Dictionary<string, string>();
 
             // Normalize options by long name in the original casing.
@@ -65,7 +81,7 @@ namespace Wolfe.FluentCli.Core
             {
                 var opt = options.Find(o => o.LongName.Equals(key, StringComparison.OrdinalIgnoreCase)
                                             || o.ShortName.Equals(key, StringComparison.OrdinalIgnoreCase));
-                if (opt == null) throw new InvalidCommandOptionException(cliCommand.Name, key);
+                if (opt == null) throw new InvalidCommandOptionException(command.Name, key);
                 normalizedOptions.Add(opt.LongName, value);
             }
 
@@ -74,27 +90,19 @@ namespace Wolfe.FluentCli.Core
                 .Where(o => o.Required && !normalizedOptions.Keys.Contains(o.LongName))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
-                throw new MissingRequiredCommandOptionsException(missingRequiredOptions);
+                throw new MissingCommandOptionsException(missingRequiredOptions);
 
-            return cliCommand.Options.OptionMap.CreateFrom(normalizedOptions);
+            return command.Options.OptionMap.CreateFrom(normalizedOptions);
         }
 
-        protected virtual Task ExecuteCore(CliCommand cliCommand, object options)
+        protected virtual CliContext BuildContext(CliInstruction instruction, CliCommand command)
         {
-            var handler = _serviceProvider.GetService(cliCommand.Handler) ??
-                          throw new InvalidCommandHandlerException(cliCommand.Name);
-
-            var handlerType = handler.GetType();
-
-            var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
-                BindingFlags.Public | BindingFlags.Instance);
-            if (executeMethod == null)
-                throw new InvalidCommandHandlerException(cliCommand.Name);
-
-            var parameters = executeMethod.GetParameters();
-
-            var invokeTask = executeMethod.Invoke(handler, parameters.Any() ? new[] { options } : null) as Task;
-            return invokeTask;
+            return new CliContext
+            {
+                Cli = this,
+                Command = command,
+                Instruction = instruction
+            };
         }
     }
 }

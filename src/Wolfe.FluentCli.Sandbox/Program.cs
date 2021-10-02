@@ -35,7 +35,7 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class DefaultCommandHandler : ICommandHandler<DefaultCommandOptions>
     {
-        public Task Execute(DefaultCommandOptions options)
+        public Task Execute(CliContext context, DefaultCommandOptions options)
         {
             Console.WriteLine($"Default: {options.FirstName} is {options.Age} old");
             return Task.CompletedTask;
@@ -50,7 +50,7 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class HelloCommandHandler : ICommandHandler<HelloCommandOptions>
     {
-        public Task Execute(HelloCommandOptions options)
+        public Task Execute(CliContext context, HelloCommandOptions options)
         {
             Console.WriteLine($"Hello {options.FirstName}!");
             return Task.CompletedTask;
@@ -59,7 +59,7 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class FooCommandHandler : ICommandHandler
     {
-        public Task Execute()
+        public Task Execute(CliContext context)
         {
             Console.WriteLine("Foo");
             return Task.CompletedTask;
@@ -68,7 +68,7 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class BarCommandHandler : ICommandHandler
     {
-        public Task Execute()
+        public Task Execute(CliContext context)
         {
             Console.WriteLine("Bar");
             return Task.CompletedTask;
