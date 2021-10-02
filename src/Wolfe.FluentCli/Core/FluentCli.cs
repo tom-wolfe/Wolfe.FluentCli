@@ -25,15 +25,15 @@ namespace Wolfe.FluentCli.Core
         public Task Execute(string args) => ExecuteInstruction(_parser.Parse(args));
         public Task Execute(params string[] args) => ExecuteInstruction(_parser.Parse(args));
 
-        protected virtual Task ExecuteInstruction(CliInstruction instruction)
+        protected virtual async Task ExecuteInstruction(CliInstruction instruction)
         {
             var command = ResolveCommand(instruction);
             var context = BuildContext(instruction, command);
             var options = ResolveOptions(instruction, command);
-            return ExecuteCore(context, options);
+            await ExecuteCore(context, options);
         }
 
-        protected virtual Task ExecuteCore(CliContext context, object options)
+        protected virtual async Task ExecuteCore(CliContext context, object options)
         {
             var handler = _serviceProvider.GetService(context.Command.Handler) ??
                           throw new CommandHandlerException(context.Command.Name, "Unable to resolve from service provider.");
@@ -50,8 +50,8 @@ namespace Wolfe.FluentCli.Core
             if (executeMethod.GetParameters().Length > 1)
                 args.Add(options);
 
-            var invokeTask = executeMethod.Invoke(handler, args.ToArray()) as Task;
-            return invokeTask;
+            if (executeMethod.Invoke(handler, args.ToArray()) is Task invokeTask)
+                await invokeTask;
         }
 
         protected virtual CliCommand ResolveCommand(CliInstruction instruction)
@@ -90,7 +90,7 @@ namespace Wolfe.FluentCli.Core
                 .Where(o => o.Required && !normalizedOptions.Keys.Contains(o.LongName))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
-                throw new MissingCommandOptionsException(missingRequiredOptions);
+                throw new MissingArgumentsException(missingRequiredOptions);
 
             return command.Options.OptionMap.CreateFrom(normalizedOptions);
         }

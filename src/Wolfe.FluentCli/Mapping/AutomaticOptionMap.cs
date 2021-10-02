@@ -15,7 +15,7 @@ namespace Wolfe.FluentCli.Mapping
             _model = model;
             _propertyMap = map;
             _typeConverter = typeConverter ?? new DefaultTypeConverter();
-        } 
+        }
 
         public object CreateFrom(Dictionary<string, string> values)
         {

@@ -75,7 +75,7 @@ namespace Wolfe.FluentCli.Core
         }
     }
 
-    public interface ICommandBuilder 
+    public interface ICommandBuilder
     {
         ICommandBuilder WithOptions<TOptions>(Action<IOptionsBuilder<TOptions>> options = null);
         ICommandBuilder WithManualOptions<TOptions>(Action<IManualOptionsBuilder<TOptions>> options = null);

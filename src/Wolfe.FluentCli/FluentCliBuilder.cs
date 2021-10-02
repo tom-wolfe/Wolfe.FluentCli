@@ -37,6 +37,9 @@ namespace Wolfe.FluentCli
             return this;
         }
 
+        public IFluentCliBuilder AddCommand<THandler, TArgs>(string name) =>
+            AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
+
         public IFluentCliBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command)
         {
             var cmd = BuildCommand<THandler>(name, command);
@@ -66,6 +69,7 @@ namespace Wolfe.FluentCli
         IFluentCliBuilder WithParser(IFluentCliParser parser);
         IFluentCliBuilder WithDefaultCommand<THandler>(Action<IDefaultCommandBuilder> command = null);
         IFluentCliBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
+        IFluentCliBuilder AddCommand<THandler, TArgs>(string name);
         IFluentCli Build();
     }
 }
