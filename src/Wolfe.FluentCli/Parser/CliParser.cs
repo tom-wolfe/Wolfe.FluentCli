@@ -55,11 +55,6 @@ namespace Wolfe.FluentCli.Parser
             return ParseCore(parsedArgs);
         }
 
-        public CliInstruction Parse(IEnumerable<string> args)
-        {
-            return ParseCore(args);
-        }
-
         private static CliInstruction ParseCore(IEnumerable<string> args)
         {
             var commands = new List<string>();

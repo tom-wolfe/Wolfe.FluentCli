@@ -23,7 +23,6 @@ namespace Wolfe.FluentCli.Core
         }
 
         public Task Execute(string args) => ExecuteInstruction(_parser.Parse(args));
-        public Task Execute(params string[] args) => ExecuteInstruction(_parser.Parse(args));
 
         protected virtual async Task ExecuteInstruction(CliInstruction instruction)
         {
