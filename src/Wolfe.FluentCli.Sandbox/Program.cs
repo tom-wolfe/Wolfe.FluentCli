@@ -8,21 +8,18 @@ namespace Wolfe.FluentCli.Sandbox
         static async Task Main()
         {
             var cli = FluentCliBuilder.Create()
-                .WithDefaultCommand<DefaultCommandHandler>(command => command
-                    .WithOptions<DefaultCommandOptions>()
-                )
-                .AddCommand<HelloCommandHandler>("hello", hello => hello
-                    .WithOptions<HelloCommandOptions>()
-                    .AddCommand<FooCommandHandler>("foo")
+                .WithDefaultCommand<DefaultCommandHandler, DefaultCommandOptions>()
+                .AddCommand("foo", hello => hello
+                    .AddCommand<HelloCommandHandler, HelloCommandOptions>("hello")
                     .AddCommand<BarCommandHandler>("bar")
                 )
                 .Build();
 
-            await cli.Execute("--first-name Tom -a 31");
-            await cli.Execute("hello -n \"Joe Bloggs\"");
-            await cli.Execute("hello -n \"Joe Bloggs");
-            await cli.Execute("hello foo");
-            await cli.Execute("hello bar");
+            await cli.Execute("--first-name Tom -a 31 years old");
+            await cli.Execute("foo");
+            await cli.Execute("foo hello -n \"Joe Bloggs\"");
+            await cli.Execute("foo hello -n \"Joe Bloggs");
+            await cli.Execute("foo bar");
             Console.ReadLine();
         }
     }
@@ -53,15 +50,6 @@ namespace Wolfe.FluentCli.Sandbox
         public Task Execute(CliContext context, HelloCommandOptions options)
         {
             Console.WriteLine($"Hello {options.FirstName}!");
-            return Task.CompletedTask;
-        }
-    }
-
-    public class FooCommandHandler : ICommandHandler
-    {
-        public Task Execute(CliContext context)
-        {
-            Console.WriteLine("Foo");
             return Task.CompletedTask;
         }
     }
