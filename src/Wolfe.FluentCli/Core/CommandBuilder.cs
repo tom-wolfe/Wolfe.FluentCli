@@ -27,6 +27,9 @@ namespace Wolfe.FluentCli.Core
             SubCommands = _commands
         };
 
+        public IFluentCliBuilder AddCommand<THandler, TArgs>(string name) =>
+            AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
+
         public ICommandBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null)
         {
             var builder = new CommandBuilder(name, typeof(THandler));
@@ -80,6 +83,8 @@ namespace Wolfe.FluentCli.Core
         ICommandBuilder WithOptions<TOptions>(Action<IOptionsBuilder<TOptions>> options = null);
         ICommandBuilder WithManualOptions<TOptions>(Action<IManualOptionsBuilder<TOptions>> options = null);
         ICommandBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
+        ICommandBuilder AddCommand<THandler, TOptions>(string name, Action<ICommandBuilder> command = null);
+
         CliCommand Build();
     }
 
