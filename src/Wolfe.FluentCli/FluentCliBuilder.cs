@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wolfe.FluentCli.Commands;
 using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Models;
 using Wolfe.FluentCli.Parser;
@@ -37,6 +38,9 @@ namespace Wolfe.FluentCli
             return this;
         }
 
+        public IFluentCliBuilder AddCommand(string name, Action<ICommandBuilder> command) => 
+            AddCommand<NullCommand>(name, command);
+
         public IFluentCliBuilder AddCommand<THandler, TArgs>(string name) =>
             AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
 
@@ -68,6 +72,7 @@ namespace Wolfe.FluentCli
         IFluentCliBuilder WithServiceProvider(IServiceProvider serviceProvider);
         IFluentCliBuilder WithParser(IFluentCliParser parser);
         IFluentCliBuilder WithDefaultCommand<THandler>(Action<IDefaultCommandBuilder> command = null);
+        IFluentCliBuilder AddCommand(string name, Action<ICommandBuilder> command);
         IFluentCliBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
         IFluentCliBuilder AddCommand<THandler, TArgs>(string name);
         IFluentCli Build();

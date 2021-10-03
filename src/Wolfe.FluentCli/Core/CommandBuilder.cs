@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wolfe.FluentCli.Commands;
 using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Core
@@ -26,6 +27,9 @@ namespace Wolfe.FluentCli.Core
             Options = _options,
             SubCommands = _commands
         };
+
+        public ICommandBuilder AddCommand(string name, Action<ICommandBuilder> command) =>
+            AddCommand<NullCommand>(name, command);
 
         public ICommandBuilder AddCommand<THandler, TArgs>(string name) =>
             AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
@@ -82,6 +86,7 @@ namespace Wolfe.FluentCli.Core
     {
         ICommandBuilder WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options = null);
         ICommandBuilder WithManualOptions<TArgs>(Action<IManualOptionsBuilder<TArgs>> options = null);
+        ICommandBuilder AddCommand(string name, Action<ICommandBuilder> command);
         ICommandBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
         ICommandBuilder AddCommand<THandler, TArgs>(string name);
 
