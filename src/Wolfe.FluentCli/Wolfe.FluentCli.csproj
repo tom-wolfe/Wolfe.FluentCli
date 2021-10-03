@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/trwolfe13/FluentCli.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/trwolfe13/FluentCli</PackageProjectUrl>
-    <Version>0.3.0</Version>
+    <Version>0.4.0</Version>
     <Company>https://www.twolfe.dev</Company>
   </PropertyGroup>
 
