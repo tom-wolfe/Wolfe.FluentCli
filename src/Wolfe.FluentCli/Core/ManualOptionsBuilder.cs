@@ -6,12 +6,12 @@ using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Core
 {
-    internal class ManualOptionsBuilder<TOptions> : IManualOptionsBuilder<TOptions>
+    internal class ManualOptionsBuilder<TArgs> : IManualOptionsBuilder<TArgs>
     {
         private readonly List<CliOption> _options = new();
         private IOptionMap _optionMap;
 
-        public IManualOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required) =>
+        public IManualOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required) =>
             AddOption(new CliOption
             {
                 ShortName = shortName,
@@ -19,7 +19,7 @@ namespace Wolfe.FluentCli.Core
                 Required = required
             });
 
-        public IManualOptionsBuilder<TOptions> AddOption(CliOption option)
+        public IManualOptionsBuilder<TArgs> AddOption(CliOption option)
         {
             if (_options.Find(o => o.ShortName.Equals(option.ShortName, StringComparison.OrdinalIgnoreCase)) != null)
                 throw new DuplicateCommandOptionException(option.ShortName);
@@ -31,9 +31,9 @@ namespace Wolfe.FluentCli.Core
             return this;
         }
 
-        public IManualOptionsBuilder<TOptions> UseMap(Func<Dictionary<string, string>, TOptions> map)
+        public IManualOptionsBuilder<TArgs> UseMap(Func<Dictionary<string, string>, TArgs> map)
         {
-            _optionMap = new ManualOptionMap<TOptions>(map);
+            _optionMap = new ManualOptionMap<TArgs>(map);
             return this;
         }
 
@@ -43,11 +43,11 @@ namespace Wolfe.FluentCli.Core
         }
     }
 
-    public interface IManualOptionsBuilder<TOptions>
+    public interface IManualOptionsBuilder<TArgs>
     {
-        IManualOptionsBuilder<TOptions> AddOption(string shortName, string longName, bool required);
-        IManualOptionsBuilder<TOptions> AddOption(CliOption option);
-        IManualOptionsBuilder<TOptions> UseMap(Func<Dictionary<string, string>, TOptions> map);
+        IManualOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required);
+        IManualOptionsBuilder<TArgs> AddOption(CliOption option);
+        IManualOptionsBuilder<TArgs> UseMap(Func<Dictionary<string, string>, TArgs> map);
         CliOptions Build();
     }
 }

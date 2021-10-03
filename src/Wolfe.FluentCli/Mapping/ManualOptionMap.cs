@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Wolfe.FluentCli.Mapping
 {
-    internal class ManualOptionMap<TOptions> : IOptionMap
+    internal class ManualOptionMap<TArgs> : IOptionMap
     {
-        private readonly Func<Dictionary<string, string>, TOptions> _map;
+        private readonly Func<Dictionary<string, string>, TArgs> _map;
 
-        public ManualOptionMap(Func<Dictionary<string, string>, TOptions> map)
+        public ManualOptionMap(Func<Dictionary<string, string>, TArgs> map)
         {
             _map = map;
         }

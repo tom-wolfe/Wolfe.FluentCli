@@ -27,7 +27,7 @@ namespace Wolfe.FluentCli.Core
             SubCommands = _commands
         };
 
-        public IFluentCliBuilder AddCommand<THandler, TArgs>(string name) =>
+        public ICommandBuilder AddCommand<THandler, TArgs>(string name) =>
             AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
 
         public ICommandBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null)
@@ -39,40 +39,40 @@ namespace Wolfe.FluentCli.Core
             return this;
         }
 
-        IDefaultCommandBuilder IDefaultCommandBuilder.WithOptions<TOptions>(Action<IOptionsBuilder<TOptions>> options)
+        IDefaultCommandBuilder IDefaultCommandBuilder.WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options)
         {
             WithOptionsCore(options);
             return this;
         }
 
-        ICommandBuilder ICommandBuilder.WithOptions<TOptions>(Action<IOptionsBuilder<TOptions>> options)
+        ICommandBuilder ICommandBuilder.WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options)
         {
             WithOptionsCore(options);
             return this;
         }
 
-        ICommandBuilder ICommandBuilder.WithManualOptions<TOptions>(Action<IManualOptionsBuilder<TOptions>> options)
+        ICommandBuilder ICommandBuilder.WithManualOptions<TArgs>(Action<IManualOptionsBuilder<TArgs>> options)
         {
             WithManualOptionsCore(options);
             return this;
         }
 
-        IDefaultCommandBuilder IDefaultCommandBuilder.WithManualOptions<TOptions>(Action<IManualOptionsBuilder<TOptions>> options)
+        IDefaultCommandBuilder IDefaultCommandBuilder.WithManualOptions<TArgs>(Action<IManualOptionsBuilder<TArgs>> options)
         {
             WithManualOptionsCore(options);
             return this;
         }
 
-        private void WithOptionsCore<TOptions>(Action<IOptionsBuilder<TOptions>> options = null)
+        private void WithOptionsCore<TArgs>(Action<IOptionsBuilder<TArgs>> options = null)
         {
-            var builder = new OptionsBuilder<TOptions>();
+            var builder = new OptionsBuilder<TArgs>();
             options?.Invoke(builder);
             _options = builder.Build();
         }
 
-        private void WithManualOptionsCore<TOptions>(Action<IManualOptionsBuilder<TOptions>> options = null)
+        private void WithManualOptionsCore<TArgs>(Action<IManualOptionsBuilder<TArgs>> options = null)
         {
-            var builder = new ManualOptionsBuilder<TOptions>();
+            var builder = new ManualOptionsBuilder<TArgs>();
             options?.Invoke(builder);
             _options = builder.Build();
         }
@@ -80,18 +80,18 @@ namespace Wolfe.FluentCli.Core
 
     public interface ICommandBuilder
     {
-        ICommandBuilder WithOptions<TOptions>(Action<IOptionsBuilder<TOptions>> options = null);
-        ICommandBuilder WithManualOptions<TOptions>(Action<IManualOptionsBuilder<TOptions>> options = null);
+        ICommandBuilder WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options = null);
+        ICommandBuilder WithManualOptions<TArgs>(Action<IManualOptionsBuilder<TArgs>> options = null);
         ICommandBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
-        ICommandBuilder AddCommand<THandler, TOptions>(string name, Action<ICommandBuilder> command = null);
+        ICommandBuilder AddCommand<THandler, TArgs>(string name);
 
         CliCommand Build();
     }
 
     public interface IDefaultCommandBuilder
     {
-        IDefaultCommandBuilder WithOptions<TOptions>(Action<IOptionsBuilder<TOptions>> options = null);
-        IDefaultCommandBuilder WithManualOptions<TOptions>(Action<IManualOptionsBuilder<TOptions>> options = null);
+        IDefaultCommandBuilder WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options = null);
+        IDefaultCommandBuilder WithManualOptions<TArgs>(Action<IManualOptionsBuilder<TArgs>> options = null);
         CliCommand Build();
     }
 }

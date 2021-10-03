@@ -7,8 +7,8 @@ namespace Wolfe.FluentCli
         Task Execute(CliContext context);
     }
 
-    public interface ICommandHandler<in TOptions>
+    public interface ICommandHandler<in TArgs>
     {
-        Task Execute(CliContext context, TOptions options = default);
+        Task Execute(CliContext context, TArgs options = default);
     }
 }
