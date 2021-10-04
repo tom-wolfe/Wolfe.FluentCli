@@ -9,7 +9,7 @@ namespace Wolfe.FluentCli.Core
     {
         private readonly string _name;
         private readonly Type _handlerType;
-        private readonly List<CliCommand> _commands = new();
+        private readonly List<CliNamedCommand> _commands = new();
         private CliOptions _options;
 
         public CommandBuilder() : this("", null) { }
@@ -20,9 +20,16 @@ namespace Wolfe.FluentCli.Core
             _handlerType = handlerType;
         }
 
-        public CliCommand Build() => new()
+        public CliNamedCommand Build() => new CliNamedCommand()
         {
             Name = _name,
+            Handler = _handlerType,
+            Options = _options,
+            SubCommands = _commands
+        };
+
+        CliCommand IDefaultCommandBuilder.Build() => new CliCommand()
+        {
             Handler = _handlerType,
             Options = _options,
             SubCommands = _commands
@@ -90,7 +97,7 @@ namespace Wolfe.FluentCli.Core
         ICommandBuilder AddCommand<THandler>(string name, Action<ICommandBuilder> command = null);
         ICommandBuilder AddCommand<THandler, TArgs>(string name);
 
-        CliCommand Build();
+        CliNamedCommand Build();
     }
 
     public interface IDefaultCommandBuilder

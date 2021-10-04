@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Wolfe.FluentCli.Exceptions;
 using Wolfe.FluentCli.Models;
 using Wolfe.FluentCli.Parser;
+using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Core
 {
@@ -25,7 +26,8 @@ namespace Wolfe.FluentCli.Core
         public async Task Execute(string args)
         {
             var scanner = new CliScanner(args);
-            var instruction = _parser.Parse(scanner, null);
+            var cliDefinition = CliDefinition.FromCommand(_rootCliCommand);
+            var instruction = _parser.Parse(scanner, cliDefinition);
             var command = ResolveCommand(instruction);
             var context = BuildContext(instruction, command);
             var options = ResolveOptions(instruction, command);
@@ -35,14 +37,14 @@ namespace Wolfe.FluentCli.Core
         protected virtual async Task ExecuteCore(CliContext context, object options)
         {
             var handler = _serviceProvider.GetService(context.Command.Handler) ??
-                          throw new CommandHandlerException(context.Command.Name, "Unable to resolve from service provider.");
+                          throw new CommandHandlerException(context.Command.Handler.Name, "Unable to resolve from service provider.");
 
             var handlerType = handler.GetType();
 
             var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
                 BindingFlags.Public | BindingFlags.Instance);
             if (executeMethod == null)
-                throw new CommandHandlerException(context.Command.Name, $"Unable to find appropriate {nameof(ICommandHandler.Execute)} method.");
+                throw new CommandHandlerException(context.Command.Handler.Name, $"Unable to find appropriate {nameof(ICommandHandler.Execute)} method.");
 
             var args = new List<object> { context };
 
@@ -80,7 +82,7 @@ namespace Wolfe.FluentCli.Core
             {
                 var opt = options.Find(o => o.LongName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase)
                                             || o.ShortName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase));
-                if (opt == null) throw new InvalidCommandOptionException(command.Name, argument.Name);
+                if (opt == null) throw new InvalidCommandOptionException(command.Handler.Name, argument.Name);
                 normalizedOptions.Add(opt.LongName, argument);
             }
 
