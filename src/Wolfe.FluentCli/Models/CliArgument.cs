@@ -1,10 +1,14 @@
-﻿namespace Wolfe.FluentCli.Models
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Wolfe.FluentCli.Models
 {
     public class CliArgument
     {
-        public CliArgument() : this(null) { }
-        public CliArgument(object value) { Value = value; }
+        public CliArgument(string value) { Values = new List<string> { value }; }
+        public CliArgument(List<string> values) { Values = values; }
 
-        public object Value { get; }
+        public string Value => Values.FirstOrDefault();
+        public List<string> Values { get; init; }
     }
 }

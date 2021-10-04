@@ -32,7 +32,7 @@ namespace Wolfe.FluentCli.Mapping
                 var property = _propertyMap[key];
                 if (property == null) continue;
 
-                var propValue = _typeConverter.Convert(value.Value.ToString(), property.PropertyType);
+                var propValue = _typeConverter.Convert(value.Value, property.PropertyType);
                 property.SetValue(model, propValue);
             }
         }

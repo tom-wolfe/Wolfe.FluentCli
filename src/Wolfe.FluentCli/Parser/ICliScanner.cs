@@ -4,6 +4,7 @@ namespace Wolfe.FluentCli.Parser
 {
     public interface ICliScanner
     {
-        CliToken GetNextToken();
+        CliToken Peek();
+        CliToken Read();
     }
 }

@@ -1,9 +1,10 @@
 ﻿using Wolfe.FluentCli.Models;
+using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Parser
 {
     public interface ICliParser
     {
-        CliInstruction Parse(string args);
+        CliInstruction Parse(ICliScanner scanner, CliDefinition definition);
     }
 }

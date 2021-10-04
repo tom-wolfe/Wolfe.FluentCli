@@ -13,6 +13,8 @@ namespace Wolfe.FluentCli.Parser
         private static readonly string StringMarkers = "\"'";
         private static readonly string ArgMarkers = "-/";
 
+        private CliToken _peekedToken;
+
         private readonly TextReader _input;
 
         public CliScanner(string input)
@@ -23,7 +25,18 @@ namespace Wolfe.FluentCli.Parser
             _input = input;
         }
 
-        public CliToken GetNextToken()
+        public CliToken Peek() => _peekedToken ??= ConsumeToken();
+
+        public CliToken Read()
+        {
+            if (_peekedToken == null) { return ConsumeToken(); }
+
+            var temp = _peekedToken;
+            _peekedToken = null;
+            return temp;
+        }
+
+        private CliToken ConsumeToken()
         {
             while (true)
             {
@@ -42,10 +55,9 @@ namespace Wolfe.FluentCli.Parser
                     return ScanQuotedString();
                 if (curChar == ASSIGNMENT)
                     return ScanAssignment();
-                if (ArgMarkers.Contains(curChar))
-                    return ScanArgumentMarker();
-                else
-                    return ScanIdentifier();
+                return ArgMarkers.Contains(curChar)
+                    ? ScanArgumentMarker()
+                    : ScanIdentifier();
             }
         }
 

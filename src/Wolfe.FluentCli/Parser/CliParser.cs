@@ -1,90 +1,125 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Wolfe.FluentCli.Models;
+using Wolfe.FluentCli.Parser.Exceptions;
+using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Parser
 {
-    internal class CliParser : ICliParser
+    public class CliParser : ICliParser
     {
-        private const char STRING_MARKER = '"';
-        private static readonly string[] OptionMarkers = { "--", "-", "/" };
-
-        public CliInstruction Parse(string args)
+        public CliInstruction Parse(ICliScanner scanner, CliDefinition definition)
         {
-            var parsedArgs = new List<string>();
+            var (commands, context) = ParseCommands(scanner, definition);
 
-            var stream = new Queue<char>(args);
-            var buffer = new StringBuilder();
+            CliArgument unnamedArguments = null;
+            if (context.Unnamed.AllowedValues != AllowedValues.None)
+                unnamedArguments = ParseUnnamedArguments(scanner, definition);
 
-            while (stream.Count > 0)
+            var namedArguments = ParseNamedArguments(scanner, definition);
+
+            var nextToken = scanner.Read();
+            if (nextToken != CliToken.Eof)
+                throw new CommandParsingException($"Unexpected token {nextToken.Type}");
+
+            return new CliInstruction
             {
-                var cur = stream.Dequeue();
-                switch (cur)
-                {
-                    case STRING_MARKER:
-                        while (true)
-                        {
-                            if (stream.Count == 0) { break; }
-                            cur = stream.Dequeue();
-                            if (cur == STRING_MARKER)
-                            {
-                                parsedArgs.Add(buffer.ToString());
-                                buffer.Clear();
-                                break;
-                            }
-                            buffer.Append(cur);
-                        }
-
-                        break;
-                    case ' ':
-                    case '\t':
-                        if (buffer.Length > 0)
-                        {
-                            parsedArgs.Add(buffer.ToString());
-                            buffer.Clear();
-                        }
-                        break;
-                    default:
-                        buffer.Append(cur);
-                        break;
-                }
-            }
-            if (buffer.Length > 0) { parsedArgs.Add(buffer.ToString()); }
-
-            return ParseCore(parsedArgs);
-        }
-
-        private static CliInstruction ParseCore(IEnumerable<string> args)
-        {
-            var commands = new List<string>();
-            var options = new Dictionary<string, CliArgument>();
-            var argQueue = new Queue<string>(args);
-
-            while (argQueue.Count > 0)
-            {
-                var current = argQueue.Dequeue();
-                if (IsOption(current))
-                {
-                    // If the next arg is another option, default to true, otherwise consume the option value;
-                    var optionValue = argQueue.Count == 0 || IsOption(argQueue.Peek()) ? true.ToString() : argQueue.Dequeue();
-                    options.Add(StripOptionMarker(current), new CliArgument(optionValue));
-                }
-                else
-                {
-                    // It's a command.
-                    commands.Add(current.Trim());
-                }
-            }
-
-            return new CliInstruction()
-            {
-                Commands = commands.ToArray(),
-                Options = options
+                UnnamedArguments = unnamedArguments,
+                Commands = commands,
+                NamedArguments = namedArguments
             };
         }
 
-        private static bool IsOption(string input) => OptionMarkers.Any(input.StartsWith);
-        private static string StripOptionMarker(string input) => input[OptionMarkers.First(input.StartsWith).Length..];
+        private static (List<string>, CliCommandDefinition) ParseCommands(ICliScanner scanner, CliDefinition definition)
+        {
+            var commands = new List<string>();
+            var current = (CliCommandDefinition)definition;
+            while (true)
+            {
+                var token = scanner.Peek();
+                if (token.Type != CliTokenType.Identifier) { return (commands, current); }
+
+                var command = FindCommand(current, token.Value);
+                if (command == null) { return (commands, current); }
+
+                commands.Add(command.Aliases.First());
+                current = command;
+                scanner.Read();
+            }
+        }
+
+        private static CliArgument ParseUnnamedArguments(ICliScanner scanner, CliDefinition definition)
+        {
+            var values = ParseArgumentValues(scanner, definition.Unnamed.AllowedValues);
+            return new CliArgument(values);
+        }
+
+        private static List<CliNamedArgument> ParseNamedArguments(ICliScanner scanner, CliDefinition definition)
+        {
+            var args = new List<CliNamedArgument>();
+            while (true)
+            {
+                var token = scanner.Peek();
+                if (token.Type is not (CliTokenType.ShortArgumentMarker or CliTokenType.LongArgumentMarker)) break;
+                var argument = ParseNamedArgument(scanner, definition);
+                args.Add(argument);
+            }
+            return args;
+        }
+
+        private static CliNamedArgument ParseNamedArgument(ICliScanner scanner, CliDefinition definition)
+        {
+            // Consume the argument marker.
+            var marker = scanner.Read();
+
+            var token = scanner.Read();
+            if (token.Type != CliTokenType.Identifier)
+                throw new CommandParsingException($"Expected argument identifier, but found {token.Type}");
+
+            var name = token.Value;
+
+            var currentArg = FindArgument(definition, marker.Type, name);
+            var values = ParseArgumentValues(scanner, currentArg.AllowedValues);
+
+            return new CliNamedArgument(currentArg.LongName, values);
+        }
+
+        private static List<string> ParseArgumentValues(ICliScanner scanner, AllowedValues allowedValues)
+        {
+            var values = new List<string>();
+            while (true)
+            {
+                var token = scanner.Peek();
+                if (token.Type is not (CliTokenType.Identifier or CliTokenType.StringLiteral)) break;
+                values.Add(token.Value);
+                scanner.Read();
+            }
+
+            switch (allowedValues)
+            {
+                case AllowedValues.Many: break;
+                case AllowedValues.One when values.Count != 1: throw new CommandParsingException("Command requires one unnamed argument.");
+                case AllowedValues.None when values.Count != 0: throw new CommandParsingException("Command does not allow unnamed arguments.");
+                default: throw new ArgumentOutOfRangeException($"Unexpected {nameof(AllowedValues)} value: {allowedValues}");
+            }
+
+            return values;
+        }
+
+        private static CliNamedCommandDefinition FindCommand(CliCommandDefinition command, string alias)
+        {
+            var match = command.Commands.FirstOrDefault(c => c.Aliases.Contains(alias, StringComparer.OrdinalIgnoreCase));
+            return match;
+        }
+
+        private static CliNamedArgumentDefinition FindArgument(CliCommandDefinition command, CliTokenType type, string alias)
+        {
+            var currentArg = command.NamedArguments
+                .FirstOrDefault(a => alias.Equals(type == CliTokenType.ShortArgumentMarker ? a.ShortName : a.LongName, StringComparison.OrdinalIgnoreCase));
+            return currentArg;
+        }
     }
 }

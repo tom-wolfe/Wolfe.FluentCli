@@ -22,10 +22,10 @@ namespace Wolfe.FluentCli.Core
             _rootCliCommand = rootCliCommand;
         }
 
-        public Task Execute(string args) => ExecuteInstruction(_parser.Parse(args));
-
-        protected virtual async Task ExecuteInstruction(CliInstruction instruction)
+        public async Task Execute(string args)
         {
+            var scanner = new CliScanner(args);
+            var instruction = _parser.Parse(scanner, null);
             var command = ResolveCommand(instruction);
             var context = BuildContext(instruction, command);
             var options = ResolveOptions(instruction, command);
@@ -76,12 +76,12 @@ namespace Wolfe.FluentCli.Core
             var normalizedOptions = new Dictionary<string, CliArgument>();
 
             // Normalize options by long name in the original casing.
-            foreach (var (key, value) in instruction.Options)
+            foreach (var argument in instruction.NamedArguments)
             {
-                var opt = options.Find(o => o.LongName.Equals(key, StringComparison.OrdinalIgnoreCase)
-                                            || o.ShortName.Equals(key, StringComparison.OrdinalIgnoreCase));
-                if (opt == null) throw new InvalidCommandOptionException(command.Name, key);
-                normalizedOptions.Add(opt.LongName, value);
+                var opt = options.Find(o => o.LongName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase)
+                                            || o.ShortName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase));
+                if (opt == null) throw new InvalidCommandOptionException(command.Name, argument.Name);
+                normalizedOptions.Add(opt.LongName, argument);
             }
 
             // Validate all required options have been passed.

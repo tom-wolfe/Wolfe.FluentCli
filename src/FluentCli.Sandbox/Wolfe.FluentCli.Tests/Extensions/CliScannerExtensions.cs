@@ -5,16 +5,16 @@ namespace Wolfe.FluentCli.Tests.Extensions
 {
     internal static class CliScannerExtensions
     {
-        public static ICliScanner AssertNextToken(this ICliScanner scanner, CliTokenType type, string value)
+        public static ICliScanner AssertReadToken(this ICliScanner scanner, CliTokenType type, string value)
         {
-            var nextToken = scanner.GetNextToken();
+            var nextToken = scanner.Read();
             nextToken.AssertEqual(type, value);
             return scanner;
         }
 
-        public static ICliScanner AssertNextToken(this ICliScanner scanner, CliToken token)
+        public static ICliScanner AssertReadToken(this ICliScanner scanner, CliToken token)
         {
-            var nextToken = scanner.GetNextToken();
+            var nextToken = scanner.Read();
             nextToken.AssertEqual(token);
             return scanner;
         }
