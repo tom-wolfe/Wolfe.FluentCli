@@ -11,7 +11,7 @@ namespace Wolfe.FluentCli.Tests.Parser
     {
         private static readonly CliDefinition ComplexDefinition = new()
         {
-            Unnamed = new() { AllowedValues = AllowedValues.Many },
+            Unnamed = { AllowedValues = AllowedValues.Many },
             NamedArguments =
             {
                 new() { LongName = "one", ShortName = "o", AllowedValues = AllowedValues.One },
@@ -22,7 +22,7 @@ namespace Wolfe.FluentCli.Tests.Parser
                 new()
                 {
                     Aliases = { "f", "foo" },
-                    Unnamed = new() { AllowedValues = AllowedValues.One },
+                    Unnamed = { AllowedValues = AllowedValues.One },
                     NamedArguments =
                     {
                         new() { LongName = "bar", ShortName = "b", AllowedValues = AllowedValues.Many }
@@ -32,20 +32,20 @@ namespace Wolfe.FluentCli.Tests.Parser
                         new()
                         {
                             Aliases = { "b", "bar" },
-                            Unnamed = new() { AllowedValues = AllowedValues.Many }
+                            Unnamed = { AllowedValues = AllowedValues.Many }
                         }
                     }
                 },
                 new()
                 {
                     Aliases = { "b", "bar" },
-                    Unnamed = new() { AllowedValues = AllowedValues.None },
+                    Unnamed = { AllowedValues = AllowedValues.None },
                     Commands =
                     {
                         new()
                         {
                             Aliases = { "f", "foo" },
-                            Unnamed = new() { AllowedValues = AllowedValues.One }
+                            Unnamed = { AllowedValues = AllowedValues.One }
                         }
                     }
                 }

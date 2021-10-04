@@ -2,6 +2,6 @@
 {
     public class CliArgumentDefinition
     {
-        public AllowedValues AllowedValues { get; set; }
+        public AllowedValues AllowedValues { get; set; } = AllowedValues.None;
     }
 }

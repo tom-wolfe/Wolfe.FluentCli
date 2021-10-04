@@ -4,6 +4,6 @@ namespace Wolfe.FluentCli.Parser.Models
 {
     public class CliNamedCommandDefinition : CliCommandDefinition
     {
-        public List<string> Aliases { get; init; } = new();
+        public List<string> Aliases { get; } = new();
     }
 }
