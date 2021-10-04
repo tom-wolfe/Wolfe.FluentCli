@@ -6,18 +6,18 @@ using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Core
 {
-    internal class OptionsBuilder<TOptions> : IOptionsBuilder<TOptions>
+    internal class OptionsBuilder<TArgs> : IOptionsBuilder<TArgs>
     {
         private IPropertyNamingStrategy _namingStrategy;
         private ITypeConverter _typeConverter;
 
-        public IOptionsBuilder<TOptions> UseNamingStrategy(IPropertyNamingStrategy strategy)
+        public IOptionsBuilder<TArgs> UseNamingStrategy(IPropertyNamingStrategy strategy)
         {
             _namingStrategy = strategy;
             return this;
         }
 
-        public IOptionsBuilder<TOptions> UseTypeConverter(ITypeConverter converter)
+        public IOptionsBuilder<TArgs> UseTypeConverter(ITypeConverter converter)
         {
             _typeConverter = converter;
             return this;
@@ -28,7 +28,7 @@ namespace Wolfe.FluentCli.Core
             var map = new Dictionary<string, PropertyInfo>();
             var options = new List<CliOption>();
 
-            var type = typeof(TOptions);
+            var type = typeof(TArgs);
             var props = type.GetProperties();
 
             foreach (var prop in props)
@@ -73,10 +73,10 @@ namespace Wolfe.FluentCli.Core
 
     }
 
-    public interface IOptionsBuilder<TOptions>
+    public interface IOptionsBuilder<TArgs>
     {
-        IOptionsBuilder<TOptions> UseNamingStrategy(IPropertyNamingStrategy strategy);
-        IOptionsBuilder<TOptions> UseTypeConverter(ITypeConverter converter);
+        IOptionsBuilder<TArgs> UseNamingStrategy(IPropertyNamingStrategy strategy);
+        IOptionsBuilder<TArgs> UseTypeConverter(ITypeConverter converter);
         CliOptions Build();
     }
 }

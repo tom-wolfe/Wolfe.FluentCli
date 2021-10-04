@@ -4,11 +4,11 @@ using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Mapping
 {
-    internal class ManualOptionMap<TOptions> : IOptionMap
+    internal class ManualOptionMap<TArgs> : IOptionMap
     {
-        private readonly Func<Dictionary<string, CliArgument>, TOptions> _map;
+        private readonly Func<Dictionary<string, CliArgument>, TArgs> _map;
 
-        public ManualOptionMap(Func<Dictionary<string, CliArgument>, TOptions> map)
+        public ManualOptionMap(Func<Dictionary<string, CliArgument>, TArgs> map)
         {
             _map = map;
         }
