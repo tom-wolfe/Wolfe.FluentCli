@@ -23,6 +23,10 @@ namespace Wolfe.FluentCli.Tests.Parser
                 {
                     Aliases = { "f", "foo" },
                     Unnamed = new() { AllowedValues = AllowedValues.One },
+                    NamedArguments =
+                    {
+                        new() { LongName = "bar", ShortName = "b", AllowedValues = AllowedValues.Many }
+                    },
                     Commands =
                     {
                         new()
@@ -55,7 +59,7 @@ namespace Wolfe.FluentCli.Tests.Parser
             var parser = new CliParser();
             var instruction = parser.Parse(scanner, ComplexDefinition);
 
-            Assert.Equal(new List<string> {"f", "b"}, instruction.Commands);
+            Assert.Equal(new List<string> { "f", "b" }, instruction.Commands);
         }
 
         [Fact]
@@ -66,7 +70,7 @@ namespace Wolfe.FluentCli.Tests.Parser
             var instruction = parser.Parse(scanner, ComplexDefinition);
 
             Assert.Equal(new List<string> { }, instruction.Commands);
-            Assert.Equal(new List<string> { "random", "unnamed arguments"}, instruction.UnnamedArguments.Values);
+            Assert.Equal(new List<string> { "random", "unnamed arguments" }, instruction.UnnamedArguments.Values);
         }
 
         [Fact]
@@ -91,6 +95,20 @@ namespace Wolfe.FluentCli.Tests.Parser
             Assert.Equal(new List<string> { }, instruction.UnnamedArguments.Values);
             Assert.Equal("many", instruction.NamedArguments[0].Name);
             Assert.Equal(new List<string> { "many", "args" }, instruction.NamedArguments[0].Values);
+        }
+
+
+        [Fact]
+        public void AllParts_ReturnsAll()
+        {
+            var scanner = new CliScanner("foo test --bar arg1 arg2");
+            var parser = new CliParser();
+            var instruction = parser.Parse(scanner, ComplexDefinition);
+
+            Assert.Equal(new List<string> { "f" }, instruction.Commands);
+            Assert.Equal(new List<string> { "test" }, instruction.UnnamedArguments.Values);
+            Assert.Equal("bar", instruction.NamedArguments[0].Name);
+            Assert.Equal(new List<string> { "arg1", "arg2" }, instruction.NamedArguments[0].Values);
         }
     }
 }

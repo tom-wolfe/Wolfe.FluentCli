@@ -17,9 +17,9 @@ namespace Wolfe.FluentCli.Parser
 
             CliArgument unnamedArguments = null;
             if (context.Unnamed.AllowedValues != AllowedValues.None)
-                unnamedArguments = ParseUnnamedArguments(scanner, definition);
+                unnamedArguments = ParseUnnamedArguments(scanner, context);
 
-            var namedArguments = ParseNamedArguments(scanner, definition);
+            var namedArguments = ParseNamedArguments(scanner, context);
 
             var nextToken = scanner.Read();
             if (nextToken != CliToken.Eof)
@@ -51,13 +51,13 @@ namespace Wolfe.FluentCli.Parser
             }
         }
 
-        private static CliArgument ParseUnnamedArguments(ICliScanner scanner, CliDefinition definition)
+        private static CliArgument ParseUnnamedArguments(ICliScanner scanner, CliCommandDefinition definition)
         {
             var values = ParseArgumentValues(scanner, definition.Unnamed.AllowedValues);
             return new CliArgument(values);
         }
 
-        private static List<CliNamedArgument> ParseNamedArguments(ICliScanner scanner, CliDefinition definition)
+        private static List<CliNamedArgument> ParseNamedArguments(ICliScanner scanner, CliCommandDefinition definition)
         {
             var args = new List<CliNamedArgument>();
             while (true)
@@ -70,7 +70,7 @@ namespace Wolfe.FluentCli.Parser
             return args;
         }
 
-        private static CliNamedArgument ParseNamedArgument(ICliScanner scanner, CliDefinition definition)
+        private static CliNamedArgument ParseNamedArgument(ICliScanner scanner, CliCommandDefinition definition)
         {
             // Consume the argument marker.
             var marker = scanner.Read();
@@ -100,10 +100,16 @@ namespace Wolfe.FluentCli.Parser
 
             switch (allowedValues)
             {
-                case AllowedValues.Many: break;
-                case AllowedValues.One when values.Count != 1: throw new CommandParsingException("Command requires one unnamed argument.");
-                case AllowedValues.None when values.Count != 0: throw new CommandParsingException("Command does not allow unnamed arguments.");
-                default: throw new ArgumentOutOfRangeException($"Unexpected {nameof(AllowedValues)} value: {allowedValues}");
+                case AllowedValues.Many:
+                    break;
+                case AllowedValues.One:
+                    if (values.Count != 1) throw new CommandParsingException("Command requires one unnamed argument.");
+                    break;
+                case AllowedValues.None:
+                    if (values.Count != 0) throw new CommandParsingException("Command does not allow unnamed arguments.");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException($"Unexpected {nameof(AllowedValues)} value: {allowedValues}");
             }
 
             return values;
