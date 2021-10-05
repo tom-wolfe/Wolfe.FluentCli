@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Wolfe.FluentCli\Wolfe.FluentCli.csproj" />
+    <ProjectReference Include="..\Wolfe.FluentCli.Core\Wolfe.FluentCli.Core.csproj" />
+    <ProjectReference Include="..\Wolfe.FluentCli.Parser\Wolfe.FluentCli.Parser.csproj" />
+    <ProjectReference Include="..\Wolfe.FluentCli\Wolfe.FluentCli.csproj" />
   </ItemGroup>
 
 </Project>

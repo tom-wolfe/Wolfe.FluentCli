@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Exceptions;
-using Wolfe.FluentCli.Mapping;
-using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Core
 {
     internal class ManualOptionsBuilder<TArgs> : IManualOptionsBuilder<TArgs>
     {
         private readonly List<CliOption> _options = new();
-        private IOptionMap _optionMap;
+        private OptionFactory _optionFactory;
 
         public IManualOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required) =>
             AddOption(new CliOption
@@ -31,15 +30,15 @@ namespace Wolfe.FluentCli.Core
             return this;
         }
 
-        public IManualOptionsBuilder<TArgs> UseMap(Func<Dictionary<string, CliArgument>, TArgs> map)
+        public IManualOptionsBuilder<TArgs> UseMap(OptionFactory factory)
         {
-            _optionMap = new ManualOptionMap<TArgs>(map);
+            _optionFactory = factory;
             return this;
         }
 
         public CliOptions Build()
         {
-            return new() { Options = _options, OptionMap = _optionMap };
+            return new() { Options = _options, OptionMap = _optionFactory };
         }
     }
 
@@ -47,7 +46,7 @@ namespace Wolfe.FluentCli.Core
     {
         IManualOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required);
         IManualOptionsBuilder<TArgs> AddOption(CliOption option);
-        IManualOptionsBuilder<TArgs> UseMap(Func<Dictionary<string, CliArgument>, TArgs> map);
+        IManualOptionsBuilder<TArgs> UseMap(OptionFactory factory);
         CliOptions Build();
     }
 }

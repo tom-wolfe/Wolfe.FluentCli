@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wolfe.FluentCli.Models;
+using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Parser.Exceptions;
 using Wolfe.FluentCli.Parser.Models;
 

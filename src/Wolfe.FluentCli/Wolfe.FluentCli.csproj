@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -18,6 +18,11 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wolfe.FluentCli.Core\Wolfe.FluentCli.Core.csproj" />
+    <ProjectReference Include="..\Wolfe.FluentCli.Parser\Wolfe.FluentCli.Parser.csproj" />
   </ItemGroup>
 
 </Project>

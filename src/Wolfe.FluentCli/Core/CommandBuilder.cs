@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wolfe.FluentCli.Commands;
-using Wolfe.FluentCli.Models;
+using Wolfe.FluentCli.Core.Models;
 
 namespace Wolfe.FluentCli.Core
 {

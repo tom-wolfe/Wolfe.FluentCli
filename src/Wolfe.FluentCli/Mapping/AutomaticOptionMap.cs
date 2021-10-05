@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Wolfe.FluentCli.Models;
+using Wolfe.FluentCli.Core.Models;
 
 namespace Wolfe.FluentCli.Mapping
 {
-    internal class AutomaticOptionMap : IOptionMap
+    internal class AutomaticOptionMap
     {
         private readonly Type _model;
         private readonly Dictionary<string, PropertyInfo> _propertyMap;
-        private readonly ITypeConverter _typeConverter;
 
-        public AutomaticOptionMap(Type model, Dictionary<string, PropertyInfo> map, ITypeConverter typeConverter)
+        public AutomaticOptionMap(Type model, Dictionary<string, PropertyInfo> map)
         {
             _model = model;
             _propertyMap = map;
-            _typeConverter = typeConverter ?? new DefaultTypeConverter();
         }
 
         public object CreateFrom(Dictionary<string, CliArgument> values)
@@ -32,7 +30,7 @@ namespace Wolfe.FluentCli.Mapping
                 var property = _propertyMap[key];
                 if (property == null) continue;
 
-                var propValue = _typeConverter.Convert(value.Value, property.PropertyType);
+                var propValue = Convert.ChangeType(value.Value, property.PropertyType);
                 property.SetValue(model, propValue);
             }
         }

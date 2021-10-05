@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Exceptions;
-using Wolfe.FluentCli.Models;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Models;
 
@@ -93,7 +93,7 @@ namespace Wolfe.FluentCli.Core
             if (missingRequiredOptions.Any())
                 throw new MissingArgumentsException(missingRequiredOptions);
 
-            return command.Options.OptionMap.CreateFrom(normalizedOptions);
+            return command.Options.OptionMap(normalizedOptions);
         }
 
         protected virtual CliContext BuildContext(CliInstruction instruction, CliCommand command)

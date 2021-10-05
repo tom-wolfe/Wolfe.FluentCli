@@ -1,4 +1,4 @@
-﻿using Wolfe.FluentCli.Models;
+﻿using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Parser

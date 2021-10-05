@@ -1,25 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Mapping;
-using Wolfe.FluentCli.Models;
 
 namespace Wolfe.FluentCli.Core
 {
     internal class OptionsBuilder<TArgs> : IOptionsBuilder<TArgs>
     {
         private IPropertyNamingStrategy _namingStrategy;
-        private ITypeConverter _typeConverter;
 
         public IOptionsBuilder<TArgs> UseNamingStrategy(IPropertyNamingStrategy strategy)
         {
             _namingStrategy = strategy;
-            return this;
-        }
-
-        public IOptionsBuilder<TArgs> UseTypeConverter(ITypeConverter converter)
-        {
-            _typeConverter = converter;
             return this;
         }
 
@@ -38,10 +31,11 @@ namespace Wolfe.FluentCli.Core
                 map.Add(option.LongName, prop);
             }
 
+            var optionMap = new AutomaticOptionMap(type, map);
             return new CliOptions()
             {
                 Options = options,
-                OptionMap = new AutomaticOptionMap(type, map, _typeConverter)
+                OptionMap = optionMap.CreateFrom
             };
         }
 
@@ -76,7 +70,6 @@ namespace Wolfe.FluentCli.Core
     public interface IOptionsBuilder<TArgs>
     {
         IOptionsBuilder<TArgs> UseNamingStrategy(IPropertyNamingStrategy strategy);
-        IOptionsBuilder<TArgs> UseTypeConverter(ITypeConverter converter);
         CliOptions Build();
     }
 }

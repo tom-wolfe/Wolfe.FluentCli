@@ -1,4 +1,4 @@
-﻿namespace Wolfe.FluentCli.Models
+﻿namespace Wolfe.FluentCli.Core.Models
 {
     public class CliOption
     {
