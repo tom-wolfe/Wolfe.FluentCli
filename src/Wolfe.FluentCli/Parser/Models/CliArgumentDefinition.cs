@@ -1,6 +1,6 @@
 ﻿namespace Wolfe.FluentCli.Parser.Models
 {
-    public class CliArgumentDefinition
+    internal class CliArgumentDefinition
     {
         public AllowedValues AllowedValues { get; set; } = AllowedValues.None;
     }

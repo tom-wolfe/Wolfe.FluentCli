@@ -9,7 +9,7 @@ using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Parser
 {
-    public class CliParser : ICliParser
+    internal class CliParser : ICliParser
     {
         public CliInstruction Parse(ICliScanner scanner, CliDefinition definition)
         {

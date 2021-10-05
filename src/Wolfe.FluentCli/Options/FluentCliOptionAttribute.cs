@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wolfe.FluentCli.Mapping
+namespace Wolfe.FluentCli.Options
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class FluentCliOptionAttribute : Attribute

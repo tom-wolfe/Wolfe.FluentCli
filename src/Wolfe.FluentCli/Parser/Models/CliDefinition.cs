@@ -2,7 +2,7 @@
 
 namespace Wolfe.FluentCli.Parser.Models
 {
-    public class CliDefinition : CliCommandDefinition
+    internal class CliDefinition : CliCommandDefinition
     {
         public static CliDefinition FromCommand(CliCommand command)
         {

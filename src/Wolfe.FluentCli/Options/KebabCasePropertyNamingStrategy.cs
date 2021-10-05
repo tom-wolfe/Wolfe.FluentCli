@@ -2,9 +2,9 @@
 using System.Reflection;
 using System.Text;
 
-namespace Wolfe.FluentCli.Mapping
+namespace Wolfe.FluentCli.Options
 {
-    public class KebabCasePropertyNamingStrategy : IPropertyNamingStrategy
+    internal class KebabCasePropertyNamingStrategy
     {
         public string GetShortName(PropertyInfo property)
         {

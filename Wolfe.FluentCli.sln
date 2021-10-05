@@ -9,10 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli.Sandbox", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli.Tests", "src\Wolfe.FluentCli.Tests\Wolfe.FluentCli.Tests.csproj", "{A57555DB-9812-4AF7-91F1-F53C7120DD05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli.Parser", "src\Wolfe.FluentCli.Parser\Wolfe.FluentCli.Parser.csproj", "{F5D4D589-0595-4A69-B983-36F926875814}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli.Core", "src\Wolfe.FluentCli.Core\Wolfe.FluentCli.Core.csproj", "{A24C13A5-3A24-4060-B1AB-07AC9A121E4E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,14 +27,6 @@ Global
 		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A57555DB-9812-4AF7-91F1-F53C7120DD05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5D4D589-0595-4A69-B983-36F926875814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5D4D589-0595-4A69-B983-36F926875814}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5D4D589-0595-4A69-B983-36F926875814}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5D4D589-0595-4A69-B983-36F926875814}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A24C13A5-3A24-4060-B1AB-07AC9A121E4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A24C13A5-3A24-4060-B1AB-07AC9A121E4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A24C13A5-3A24-4060-B1AB-07AC9A121E4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A24C13A5-3A24-4060-B1AB-07AC9A121E4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,6 +1,6 @@
 ﻿namespace Wolfe.FluentCli.Parser.Models
 {
-    public enum CliTokenType
+    internal enum CliTokenType
     {
         Identifier,
         ShortArgumentMarker,

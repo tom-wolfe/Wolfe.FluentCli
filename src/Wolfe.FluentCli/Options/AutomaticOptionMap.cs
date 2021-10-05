@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Wolfe.FluentCli.Core.Models;
 
-namespace Wolfe.FluentCli.Mapping
+namespace Wolfe.FluentCli.Options
 {
     internal class AutomaticOptionMap
     {

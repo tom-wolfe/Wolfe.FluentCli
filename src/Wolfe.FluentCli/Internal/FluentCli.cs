@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Core.Exceptions;
 using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Core.Services;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Models;
 
-namespace Wolfe.FluentCli.Core
+namespace Wolfe.FluentCli.Internal
 {
     internal class FluentCli : IFluentCli
     {

@@ -1,6 +1,6 @@
 ﻿namespace Wolfe.FluentCli.Parser.Models
 {
-    public record CliToken
+    internal record CliToken
     {
         public CliToken(CliTokenType type, string value)
         {

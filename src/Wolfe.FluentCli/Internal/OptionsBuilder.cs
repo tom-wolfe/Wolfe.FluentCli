@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Wolfe.FluentCli.Core.Exceptions;
 using Wolfe.FluentCli.Core.Models;
 
-namespace Wolfe.FluentCli.Builders
+namespace Wolfe.FluentCli.Internal
 {
-    internal class ManualOptionsBuilder<TArgs> : IManualOptionsBuilder<TArgs>
+    internal class OptionsBuilder<TArgs> : IOptionsBuilder<TArgs>
     {
         private readonly List<CliOption> _options = new();
         private OptionFactory _optionFactory;
 
-        public IManualOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required) =>
+        public IOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required) =>
             AddOption(new CliOption
             {
                 ShortName = shortName,
@@ -18,7 +18,7 @@ namespace Wolfe.FluentCli.Builders
                 Required = required
             });
 
-        public IManualOptionsBuilder<TArgs> AddOption(CliOption option)
+        public IOptionsBuilder<TArgs> AddOption(CliOption option)
         {
             if (_options.Find(o => o.ShortName.Equals(option.ShortName, StringComparison.OrdinalIgnoreCase)) != null)
                 throw new CliBuildException($"Command with short name {option.ShortName} already exists.");
@@ -30,7 +30,7 @@ namespace Wolfe.FluentCli.Builders
             return this;
         }
 
-        public IManualOptionsBuilder<TArgs> UseMap(OptionFactory factory)
+        public IOptionsBuilder<TArgs> UseMap(OptionFactory factory)
         {
             _optionFactory = factory;
             return this;
@@ -40,13 +40,5 @@ namespace Wolfe.FluentCli.Builders
         {
             return new() { Options = _options, OptionMap = _optionFactory };
         }
-    }
-
-    public interface IManualOptionsBuilder<TArgs>
-    {
-        IManualOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required);
-        IManualOptionsBuilder<TArgs> AddOption(CliOption option);
-        IManualOptionsBuilder<TArgs> UseMap(OptionFactory factory);
-        CliOptions Build();
     }
 }

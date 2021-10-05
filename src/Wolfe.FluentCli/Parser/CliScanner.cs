@@ -5,7 +5,7 @@ using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Parser
 {
-    public class CliScanner : ICliScanner
+    internal class CliScanner : ICliScanner
     {
         private const int EOF = -1;
         private const char ASSIGNMENT = '=';

@@ -2,7 +2,7 @@
 
 namespace Wolfe.FluentCli.Parser
 {
-    public interface ICliScanner
+    internal interface ICliScanner
     {
         CliToken Peek();
         CliToken Read();

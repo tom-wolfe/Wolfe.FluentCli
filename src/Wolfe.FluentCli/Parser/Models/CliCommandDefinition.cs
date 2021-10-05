@@ -2,7 +2,7 @@
 
 namespace Wolfe.FluentCli.Parser.Models
 {
-    public class CliCommandDefinition
+    internal class CliCommandDefinition
     {
         public CliArgumentDefinition Unnamed { get; } = new();
         public List<CliNamedArgumentDefinition> NamedArguments { get; } = new();
