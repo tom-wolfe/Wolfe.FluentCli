@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Core.Build;
 using Wolfe.FluentCli.Core.Build.Internal;
 using Wolfe.FluentCli.Core.Build.Public;

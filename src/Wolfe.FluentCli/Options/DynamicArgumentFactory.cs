@@ -26,7 +26,7 @@ namespace Wolfe.FluentCli.Options
 
         public void ConfigureBuilder(OptionsBuilder<TArgs> options)
         {
-            foreach(var option in _propertyMap)
+            foreach (var option in _propertyMap)
                 options.AddOption(option.Value.Item1);
         }
 
@@ -36,7 +36,7 @@ namespace Wolfe.FluentCli.Options
             {
                 var map = _propertyMap[arg.Name];
                 if (map == default) continue;
-                
+
                 // TODO: Account for arg.Values.
 
                 var propValue = Convert.ChangeType(arg.Value, map.Item2.PropertyType);

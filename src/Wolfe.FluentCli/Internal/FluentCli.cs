@@ -90,7 +90,8 @@ namespace Wolfe.FluentCli.Internal
             return command.Options.OptionMap(context);
         }
 
-        private CliContext BuildContext(CliParseResult result) {
+        private CliContext BuildContext(CliParseResult result)
+        {
             var unnamed = new CliArgument(result.Unnamed.Values);
             var named = result.Named.Select(a => new CliNamedArgument(a.Name, a.Values)).ToList();
             return new CliContext(this, result.Commands, unnamed, named);
