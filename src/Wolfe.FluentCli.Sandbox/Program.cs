@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Options;
@@ -10,48 +11,43 @@ namespace Wolfe.FluentCli.Sandbox
         static async Task Main()
         {
             var cli = Cli.Build(cli => cli
-                .WithDefaultCommand<DefaultCommandHandler, DefaultCommandOptions>()
+                .WithDefaultCommand<DefaultCommandHandler, TestArgs>()
                 .AddCommand("foo", hello => hello
-                    .AddCommand<HelloCommandHandler, HelloCommandOptions>("hello")
+                    .AddCommand<HelloCommandHandler, TestArgs>("hello")
                     .AddCommand<BarCommandHandler>("bar")
                 )
             );
 
-            await cli.Execute("--first-name Tom -a 31");
+            await cli.Execute("--name Tom -a 31");
             await cli.Execute("foo");
             await cli.Execute("foo hello -n \"Joe Bloggs\"");
-            await cli.Execute("foo hello -n \"Joe Bloggs");
+            await cli.Execute("foo hello -n \"Joe Bloggs\" --colors red green blue");
             await cli.Execute("foo bar");
             Console.ReadLine();
         }
     }
 
-    public class DefaultCommandOptions
+    public class TestArgs
     {
-        public string FirstName { get; set; }
+        public string Name { get; set; }
         public int Age { get; set; }
+        public List<string> Colors { get; set; } = new();
     }
 
-    public class DefaultCommandHandler : ICommandHandler<DefaultCommandOptions>
+    public class DefaultCommandHandler : ICommandHandler<TestArgs>
     {
-        public Task Execute(CliContext context, DefaultCommandOptions options)
+        public Task Execute(CliContext context, TestArgs options)
         {
-            Console.WriteLine($"Default: {options.FirstName} is {options.Age} years old");
+            Console.WriteLine($"Default: {options.Name} is {options.Age} years old");
             return Task.CompletedTask;
         }
     }
 
-    public class HelloCommandOptions
+    public class HelloCommandHandler : ICommandHandler<TestArgs>
     {
-        [FluentCliOption("n", "name")]
-        public string FirstName { get; set; }
-    }
-
-    public class HelloCommandHandler : ICommandHandler<HelloCommandOptions>
-    {
-        public Task Execute(CliContext context, HelloCommandOptions options)
+        public Task Execute(CliContext context, TestArgs options)
         {
-            Console.WriteLine($"Hello {options.FirstName}!");
+            Console.WriteLine($"Hello {options.Name}! Your favorite colors are {string.Join(", ", options.Colors)}");
             return Task.CompletedTask;
         }
     }

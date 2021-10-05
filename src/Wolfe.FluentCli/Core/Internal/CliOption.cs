@@ -5,5 +5,6 @@
         public string ShortName { get; init; }
         public string LongName { get; init; }
         public bool Required { get; init; }
+        public AllowedValues AllowedValues { get; set; } = AllowedValues.One;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Wolfe.FluentCli.Core.Internal;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Definition;
 using Xunit;

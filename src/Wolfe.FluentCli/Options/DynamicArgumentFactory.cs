@@ -37,9 +37,17 @@ namespace Wolfe.FluentCli.Options
                 var map = _propertyMap[arg.Name];
                 if (map == default) continue;
 
-                // TODO: Account for arg.Values.
+                
+                // Check if it's a scalar/list value
+                object argValue = GetPropertyAllowedValues(map.Item2) switch
+                {
+                    AllowedValues.None => true,
+                    AllowedValues.One => arg.Value,
+                    AllowedValues.Many => arg.Values,
+                    _ => throw new Exception("Panic")
+                };
 
-                var propValue = Convert.ChangeType(arg.Value, map.Item2.PropertyType);
+                var propValue = Convert.ChangeType(argValue, map.Item2.PropertyType);
                 map.Item2.SetValue(model, propValue);
             }
         }
@@ -53,7 +61,8 @@ namespace Wolfe.FluentCli.Options
                 {
                     ShortName = strategy.GetShortName(property),
                     LongName = strategy.GetLongName(property),
-                    Required = false
+                    Required = false,
+                    AllowedValues = GetPropertyAllowedValues(property)
                 };
             }
             else
@@ -63,8 +72,16 @@ namespace Wolfe.FluentCli.Options
                     ShortName = attribute.ShortName,
                     LongName = attribute.LongName,
                     Required = attribute.Required,
+                    AllowedValues = GetPropertyAllowedValues(property)
                 };
             }
+        }
+
+        private static AllowedValues GetPropertyAllowedValues(PropertyInfo property)
+        {
+            if (property.PropertyType.IsAssignableFrom(typeof(List<string>)))
+                return AllowedValues.Many;
+            return property.PropertyType == typeof(bool) ? AllowedValues.None : AllowedValues.One;
         }
     }
 }

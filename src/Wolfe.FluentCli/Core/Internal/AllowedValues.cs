@@ -1,4 +1,4 @@
-﻿namespace Wolfe.FluentCli.Parser.Definition
+﻿namespace Wolfe.FluentCli.Core.Internal
 {
     internal enum AllowedValues
     {

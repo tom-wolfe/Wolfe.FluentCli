@@ -28,7 +28,7 @@ namespace Wolfe.FluentCli.Parser.Definition
             {
                 def.NamedArguments.Add(new CliNamedArgumentDefinition
                 {
-                    AllowedValues = AllowedValues.One,
+                    AllowedValues = namedArg.AllowedValues,
                     LongName = namedArg.LongName,
                     ShortName = namedArg.ShortName
                 });
