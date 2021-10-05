@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli", "src\Wolf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wolfe.FluentCli.Sandbox", "src\Wolfe.FluentCli.Sandbox\Wolfe.FluentCli.Sandbox.csproj", "{95DFB247-DC08-4C82-8160-DD114F257A71}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfe.FluentCli.Tests", "src\FluentCli.Sandbox\Wolfe.FluentCli.Tests\Wolfe.FluentCli.Tests.csproj", "{A57555DB-9812-4AF7-91F1-F53C7120DD05}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wolfe.FluentCli.Tests", "src\Wolfe.FluentCli.Tests\Wolfe.FluentCli.Tests.csproj", "{A57555DB-9812-4AF7-91F1-F53C7120DD05}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
