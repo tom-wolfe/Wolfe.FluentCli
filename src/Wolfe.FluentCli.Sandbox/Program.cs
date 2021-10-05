@@ -17,7 +17,7 @@ namespace Wolfe.FluentCli.Sandbox
                 )
             );
 
-            await cli.Execute("--first-name Tom -a 31 years old");
+            await cli.Execute("--first-name Tom -a 31");
             await cli.Execute("foo");
             await cli.Execute("foo hello -n \"Joe Bloggs\"");
             await cli.Execute("foo hello -n \"Joe Bloggs");
@@ -36,7 +36,7 @@ namespace Wolfe.FluentCli.Sandbox
     {
         public Task Execute(CliContext context, DefaultCommandOptions options)
         {
-            Console.WriteLine($"Default: {options.FirstName} is {options.Age} old");
+            Console.WriteLine($"Default: {options.FirstName} is {options.Age} years old");
             return Task.CompletedTask;
         }
     }

@@ -22,20 +22,8 @@ namespace Wolfe.FluentCli.Internal
             _handlerType = handlerType;
         }
 
-        public CliNamedCommand BuildNamedCommand() => new()
-        {
-            Name = _name,
-            Handler = _handlerType,
-            Options = _options,
-            SubCommands = _commands
-        };
-
-        public CliCommand BuildCommand() => new()
-        {
-            Handler = _handlerType,
-            Options = _options,
-            SubCommands = _commands
-        };
+        public CliNamedCommand BuildNamedCommand() => new(_name, _handlerType, _options, _commands);
+        public CliCommand BuildCommand() => new(_handlerType, _options, _commands);
 
         public INamedCommandBuilder AddCommand(string name, Action<INamedCommandBuilder> command) =>
             AddCommand<NullCommand>(name, command);

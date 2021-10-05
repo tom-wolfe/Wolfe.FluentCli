@@ -63,7 +63,7 @@ namespace Wolfe.FluentCli.Internal
             var currentCommandChain = new List<string>();
             foreach (var commandName in context.Commands)
             {
-                var nextCommand = currentCommand.SubCommands
+                var nextCommand = currentCommand.Commands
                     .Find(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
                 currentCommand = nextCommand ?? throw new CliInterpreterException($"Unrecognized command chain: {string.Join(' ', currentCommandChain)} {commandName}.");
                 currentCommandChain.Add(commandName);
@@ -85,7 +85,7 @@ namespace Wolfe.FluentCli.Internal
             if (missingRequiredOptions.Any())
                 throw new CliInterpreterException($"The following arguments are required: {string.Join(' ', missingRequiredOptions)}.");
 
-            return command.Options.OptionMap(context);
+            return command.Options.Factory(context);
         }
 
         private CliContext BuildContext(CliParseResult result)

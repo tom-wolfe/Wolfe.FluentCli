@@ -22,6 +22,8 @@ namespace Wolfe.FluentCli.Parser.Definition
         private static void AssignCommand(CliCommand command, CliCommandDefinition def)
         {
             // TODO: Set unnamed args.
+            def.Unnamed.AllowedValues = AllowedValues.None;
+
             foreach (var namedArg in command.Options.Options)
             {
                 def.NamedArguments.Add(new CliNamedArgumentDefinition
@@ -32,10 +34,10 @@ namespace Wolfe.FluentCli.Parser.Definition
                 });
             }
 
-            foreach (var subcommand in command.SubCommands)
+            foreach (var cmd in command.Commands)
             {
-                var subcommandDef = FromNamedCommand(subcommand);
-                def.Commands.Add(subcommandDef);
+                var cmdDef = FromNamedCommand(cmd);
+                def.Commands.Add(cmdDef);
             }
         }
     }

@@ -52,7 +52,7 @@ namespace Wolfe.FluentCli.Internal
         {
             var defaultBuilder = _builder ?? new CommandBuilder();
             var defaultCommand = defaultBuilder.BuildCommand();
-            defaultCommand.SubCommands.AddRange(_subCommands);
+            defaultCommand.Commands.AddRange(_subCommands);
 
             var parser = new CliParser();
             return new FluentCli(_serviceProvider, parser, defaultCommand);

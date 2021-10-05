@@ -38,9 +38,6 @@ namespace Wolfe.FluentCli.Internal
             return this;
         }
 
-        public CliOptions Build()
-        {
-            return new() { Options = _parameters, OptionMap = _optionFactory };
-        }
+        public CliOptions Build() => new(_parameters, _optionFactory);
     }
 }
