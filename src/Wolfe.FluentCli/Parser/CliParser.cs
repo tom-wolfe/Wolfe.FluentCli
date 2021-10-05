@@ -4,18 +4,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Wolfe.FluentCli.Core.Exceptions;
-using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Parser.Models;
+using Wolfe.FluentCli.Parser.Output;
 
 namespace Wolfe.FluentCli.Parser
 {
     internal class CliParser : ICliParser
     {
-        public CliInstruction Parse(ICliScanner scanner, CliDefinition definition)
+        public CliParseResult Parse(ICliScanner scanner, CliDefinition definition)
         {
             var (commands, context) = ParseCommands(scanner, definition);
 
-            CliArgument unnamedArguments = null;
+            CliParsedArgument unnamedArguments = null;
             if (context.Unnamed.AllowedValues != AllowedValues.None)
                 unnamedArguments = ParseUnnamedArguments(scanner, context);
 
@@ -25,12 +25,7 @@ namespace Wolfe.FluentCli.Parser
             if (nextToken != CliToken.Eof)
                 throw new CliInterpreterException($"Unexpected token {nextToken.Type}");
 
-            return new CliInstruction
-            {
-                UnnamedArguments = unnamedArguments,
-                Commands = commands,
-                NamedArguments = namedArguments
-            };
+            return new CliParseResult(commands, unnamedArguments, namedArguments);
         }
 
         private static (List<string>, CliCommandDefinition) ParseCommands(ICliScanner scanner, CliDefinition definition)
@@ -51,15 +46,15 @@ namespace Wolfe.FluentCli.Parser
             }
         }
 
-        private static CliArgument ParseUnnamedArguments(ICliScanner scanner, CliCommandDefinition definition)
+        private static CliParsedArgument ParseUnnamedArguments(ICliScanner scanner, CliCommandDefinition definition)
         {
             var values = ParseArgumentValues(scanner, definition.Unnamed.AllowedValues);
-            return new CliArgument(values);
+            return new CliParsedArgument(values);
         }
 
-        private static List<CliNamedArgument> ParseNamedArguments(ICliScanner scanner, CliCommandDefinition definition)
+        private static List<CliParsedNamedArgument> ParseNamedArguments(ICliScanner scanner, CliCommandDefinition definition)
         {
-            var args = new List<CliNamedArgument>();
+            var args = new List<CliParsedNamedArgument>();
             while (true)
             {
                 var token = scanner.Peek();
@@ -70,7 +65,7 @@ namespace Wolfe.FluentCli.Parser
             return args;
         }
 
-        private static CliNamedArgument ParseNamedArgument(ICliScanner scanner, CliCommandDefinition definition)
+        private static CliParsedNamedArgument ParseNamedArgument(ICliScanner scanner, CliCommandDefinition definition)
         {
             // Consume the argument marker.
             var marker = scanner.Read();
@@ -84,7 +79,7 @@ namespace Wolfe.FluentCli.Parser
             var currentArg = FindArgument(definition, marker.Type, name);
             var values = ParseArgumentValues(scanner, currentArg.AllowedValues);
 
-            return new CliNamedArgument(currentArg.LongName, values);
+            return new CliParsedNamedArgument(currentArg.LongName, values);
         }
 
         private static List<string> ParseArgumentValues(ICliScanner scanner, AllowedValues allowedValues)

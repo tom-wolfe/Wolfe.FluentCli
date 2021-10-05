@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Core.Exceptions;
 using Wolfe.FluentCli.Core.Models;
 
@@ -7,30 +8,37 @@ namespace Wolfe.FluentCli.Internal
 {
     internal class OptionsBuilder<TArgs> : IOptionsBuilder<TArgs>
     {
-        private readonly List<CliOption> _options = new();
+        private readonly List<CliOption> _parameters = new();
         private OptionFactory _optionFactory;
 
         public IOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required) =>
-            AddOption(new CliOption
+            AddOption(new CliParameter
             {
                 ShortName = shortName,
                 LongName = longName,
                 Required = required
             });
 
-        public IOptionsBuilder<TArgs> AddOption(CliOption option)
+        public IOptionsBuilder<TArgs> AddOption(CliParameter parameter) => AddOption(new CliOption()
         {
-            if (_options.Find(o => o.ShortName.Equals(option.ShortName, StringComparison.OrdinalIgnoreCase)) != null)
-                throw new CliBuildException($"Command with short name {option.ShortName} already exists.");
+            LongName = parameter.LongName,
+            ShortName = parameter.ShortName,
+            Required = parameter.Required
+        });
 
-            if (_options.Find(o => o.LongName.Equals(option.LongName, StringComparison.OrdinalIgnoreCase)) != null)
-                throw new CliBuildException($"Command with long name {option.LongName} already exists.");
+        public IOptionsBuilder<TArgs> AddOption(CliOption parameter)
+        {
+            if (_parameters.Find(o => o.ShortName.Equals(parameter.ShortName, StringComparison.OrdinalIgnoreCase)) != null)
+                throw new CliBuildException($"Command with short name {parameter.ShortName} already exists.");
 
-            _options.Add(option);
+            if (_parameters.Find(o => o.LongName.Equals(parameter.LongName, StringComparison.OrdinalIgnoreCase)) != null)
+                throw new CliBuildException($"Command with long name {parameter.LongName} already exists.");
+
+            _parameters.Add(parameter);
             return this;
         }
 
-        public IOptionsBuilder<TArgs> UseMap(OptionFactory factory)
+        public IOptionsBuilder<TArgs> UseFactory(OptionFactory factory)
         {
             _optionFactory = factory;
             return this;
@@ -38,7 +46,7 @@ namespace Wolfe.FluentCli.Internal
 
         public CliOptions Build()
         {
-            return new() { Options = _options, OptionMap = _optionFactory };
+            return new() { Options = _parameters, OptionMap = _optionFactory };
         }
     }
 }

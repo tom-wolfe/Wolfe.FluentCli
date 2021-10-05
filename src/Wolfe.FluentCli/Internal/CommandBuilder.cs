@@ -21,7 +21,7 @@ namespace Wolfe.FluentCli.Internal
             _handlerType = handlerType;
         }
 
-        public CliNamedCommand Build() => new()
+        public CliNamedCommand BuildNamedCommand() => new()
         {
             Name = _name,
             Handler = _handlerType,
@@ -29,7 +29,7 @@ namespace Wolfe.FluentCli.Internal
             SubCommands = _commands
         };
 
-        CliCommand ICommandBuilder.Build() => new()
+        public CliCommand BuildCommand() => new()
         {
             Handler = _handlerType,
             Options = _options,
@@ -46,7 +46,7 @@ namespace Wolfe.FluentCli.Internal
         {
             var builder = new CommandBuilder(name, typeof(THandler));
             command?.Invoke(builder);
-            var subCommand = builder.Build();
+            var subCommand = builder.BuildNamedCommand();
             _commands.Add(subCommand);
             return this;
         }
@@ -66,8 +66,15 @@ namespace Wolfe.FluentCli.Internal
         private void WithOptionsCore<TArgs>(Action<IOptionsBuilder<TArgs>> options = null)
         {
             var builder = new OptionsBuilder<TArgs>();
-            options ??= o => o.UseDynamicArgs();
-            options.Invoke(builder);
+
+            if (options == null)
+            {
+                var optionMap = new DynamicArgumentFactory<TArgs>();
+                optionMap.ConfigureBuilder(builder);
+                builder.UseFactory(optionMap.Create);
+            }
+            else
+                options.Invoke(builder);
             _options = builder.Build();
         }
     }

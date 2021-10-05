@@ -1,6 +1,6 @@
 ﻿namespace Wolfe.FluentCli.Core.Models
 {
-    public class CliNamedCommand : CliCommand
+    internal class CliNamedCommand : CliCommand
     {
         public string Name { get; init; }
     }

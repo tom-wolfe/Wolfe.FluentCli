@@ -9,6 +9,7 @@ using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Core.Services;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Models;
+using Wolfe.FluentCli.Parser.Output;
 
 namespace Wolfe.FluentCli.Internal
 {
@@ -29,24 +30,24 @@ namespace Wolfe.FluentCli.Internal
         {
             var scanner = new CliScanner(args);
             var cliDefinition = CliDefinition.FromCommand(_rootCliCommand);
-            var instruction = _parser.Parse(scanner, cliDefinition);
-            var command = ResolveCommand(instruction);
-            var context = BuildContext(instruction, command);
-            var options = ResolveOptions(instruction, command);
-            await ExecuteCore(context, options);
+            var result = _parser.Parse(scanner, cliDefinition);
+            var context = BuildContext(result);
+            var command = ResolveCommand(context);
+            var options = ResolveArguments(context, command);
+            await ExecuteCore(context, options, command);
         }
 
-        protected virtual async Task ExecuteCore(CliContext context, object options)
+        private async Task ExecuteCore(CliContext context, object options, CliCommand command)
         {
-            var handler = _serviceProvider(context.Command.Handler) ??
-                          throw new CliExecutionException($"Unable to resolve {context.Command.Handler.Name}from service provider.");
+            var handler = _serviceProvider(command.Handler) ??
+                          throw new CliExecutionException($"Unable to resolve {command.Handler.Name}from service provider.");
 
             var handlerType = handler.GetType();
 
             var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
                 BindingFlags.Public | BindingFlags.Instance);
             if (executeMethod == null)
-                throw new CliExecutionException($"Unable to find appropriate {context.Command.Handler.Name}.{nameof(ICommandHandler.Execute)} method.");
+                throw new CliExecutionException($"Unable to find appropriate {command.Handler.Name}.{nameof(ICommandHandler.Execute)} method.");
 
             var args = new List<object> { context };
 
@@ -57,11 +58,11 @@ namespace Wolfe.FluentCli.Internal
                 await invokeTask;
         }
 
-        protected virtual CliCommand ResolveCommand(CliInstruction instruction)
+        private CliCommand ResolveCommand(CliContext context)
         {
             var currentCommand = _rootCliCommand;
             var currentCommandChain = new List<string>();
-            foreach (var commandName in instruction.Commands)
+            foreach (var commandName in context.Commands)
             {
                 var nextCommand = currentCommand.SubCommands
                     .Find(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
@@ -72,40 +73,26 @@ namespace Wolfe.FluentCli.Internal
             return currentCommand;
         }
 
-        protected virtual object ResolveOptions(CliInstruction instruction, CliCommand command)
+        private object ResolveArguments(CliContext context, CliCommand command)
         {
             if (command.Options == null) { return null; }
 
             var options = command.Options.Options;
-            var normalizedOptions = new Dictionary<string, CliArgument>();
-
-            // Normalize options by long name in the original casing.
-            foreach (var argument in instruction.NamedArguments)
-            {
-                var opt = options.Find(o => o.LongName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase)
-                                            || o.ShortName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase));
-                if (opt == null) throw new CliInterpreterException($"Unrecognized argument {argument.Name} for command {command.Handler.Name}");
-                normalizedOptions.Add(opt.LongName, argument);
-            }
 
             // Validate all required options have been passed.
             var missingRequiredOptions = options
-                .Where(o => o.Required && !normalizedOptions.Keys.Contains(o.LongName))
+                .Where(o => o.Required && !context.NamedArguments.Any(n => n.Name == o.LongName))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
                 throw new CliInterpreterException($"The following arguments are required: {string.Join(' ', missingRequiredOptions)}.");
 
-            return command.Options.OptionMap(normalizedOptions);
+            return command.Options.OptionMap(context);
         }
 
-        protected virtual CliContext BuildContext(CliInstruction instruction, CliCommand command)
-        {
-            return new CliContext
-            {
-                Cli = this,
-                Command = command,
-                Instruction = instruction
-            };
+        private CliContext BuildContext(CliParseResult result) {
+            var unnamed = new CliArgument(result.Unnamed.Values);
+            var named = result.Named.Select(a => new CliNamedArgument(a.Name, a.Values)).ToList();
+            return new CliContext(this, result.Commands, unnamed, named);
         }
     }
 }

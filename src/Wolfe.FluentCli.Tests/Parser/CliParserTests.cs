@@ -65,10 +65,10 @@ namespace Wolfe.FluentCli.Tests.Parser
         {
             var scanner = new CliScanner("random \"unnamed arguments\"");
             var parser = new CliParser();
-            var instruction = parser.Parse(scanner, ComplexDefinition);
+            var result = parser.Parse(scanner, ComplexDefinition);
 
-            Assert.Equal(new List<string> { }, instruction.Commands);
-            Assert.Equal(new List<string> { "random", "unnamed arguments" }, instruction.UnnamedArguments.Values);
+            Assert.Equal(new List<string> { }, result.Commands);
+            Assert.Equal(new List<string> { "random", "unnamed arguments" }, result.Unnamed.Values);
         }
 
         [Fact]
@@ -79,7 +79,7 @@ namespace Wolfe.FluentCli.Tests.Parser
             var instruction = parser.Parse(scanner, ComplexDefinition);
 
             Assert.Equal(new List<string> { "f" }, instruction.Commands);
-            Assert.Equal(new List<string> { "combine" }, instruction.UnnamedArguments.Values);
+            Assert.Equal(new List<string> { "combine" }, instruction.Unnamed.Values);
         }
 
         [Fact]
@@ -90,9 +90,9 @@ namespace Wolfe.FluentCli.Tests.Parser
             var instruction = parser.Parse(scanner, ComplexDefinition);
 
             Assert.Equal(new List<string> { }, instruction.Commands);
-            Assert.Equal(new List<string> { }, instruction.UnnamedArguments.Values);
-            Assert.Equal("many", instruction.NamedArguments[0].Name);
-            Assert.Equal(new List<string> { "many", "args" }, instruction.NamedArguments[0].Values);
+            Assert.Equal(new List<string> { }, instruction.Unnamed.Values);
+            Assert.Equal("many", instruction.Named[0].Name);
+            Assert.Equal(new List<string> { "many", "args" }, instruction.Named[0].Values);
         }
 
 
@@ -104,9 +104,9 @@ namespace Wolfe.FluentCli.Tests.Parser
             var instruction = parser.Parse(scanner, ComplexDefinition);
 
             Assert.Equal(new List<string> { "f" }, instruction.Commands);
-            Assert.Equal(new List<string> { "test" }, instruction.UnnamedArguments.Values);
-            Assert.Equal("bar", instruction.NamedArguments[0].Name);
-            Assert.Equal(new List<string> { "arg1", "arg2" }, instruction.NamedArguments[0].Values);
+            Assert.Equal(new List<string> { "test" }, instruction.Unnamed.Values);
+            Assert.Equal("bar", instruction.Named[0].Name);
+            Assert.Equal(new List<string> { "arg1", "arg2" }, instruction.Named[0].Values);
         }
     }
 }

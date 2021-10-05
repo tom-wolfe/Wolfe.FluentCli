@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Wolfe.FluentCli.Core.Models
 {
-    public class CliCommand
+    internal class CliCommand
     {
         public Type Handler { get; init; }
         public CliOptions Options { get; init; } = new();

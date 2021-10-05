@@ -10,7 +10,7 @@ namespace Wolfe.FluentCli.Internal
 {
     internal class CliBuilder : ICliBuilder
     {
-        private ICommandBuilder _builder;
+        private CommandBuilder _builder;
         private readonly List<CliNamedCommand> _subCommands = new();
         private ServiceProvider _serviceProvider = Activator.CreateInstance;
 
@@ -51,7 +51,7 @@ namespace Wolfe.FluentCli.Internal
         public IFluentCli Build()
         {
             var defaultBuilder = _builder ?? new CommandBuilder();
-            var defaultCommand = defaultBuilder.Build();
+            var defaultCommand = defaultBuilder.BuildCommand();
             defaultCommand.SubCommands.AddRange(_subCommands);
 
             var parser = new CliParser();
@@ -62,7 +62,7 @@ namespace Wolfe.FluentCli.Internal
         {
             var builder = new CommandBuilder(name, typeof(THandler));
             command?.Invoke(builder);
-            return builder.Build();
+            return builder.BuildNamedCommand();
         }
     }
 }

@@ -7,6 +7,5 @@ namespace Wolfe.FluentCli
     public interface ICommandBuilder
     {
         ICommandBuilder WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options = null);
-        CliCommand Build();
     }
 }
