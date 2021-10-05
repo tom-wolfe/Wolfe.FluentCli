@@ -68,7 +68,7 @@ namespace Wolfe.FluentCli.Tests.Parser
             var parser = new CliParser();
             var result = parser.Parse(scanner, ComplexDefinition);
 
-            Assert.Equal(new List<string> { }, result.Commands);
+            Assert.Equal(new List<string>(), result.Commands);
             Assert.Equal(new List<string> { "random", "unnamed arguments" }, result.Unnamed.Values);
         }
 
@@ -90,8 +90,8 @@ namespace Wolfe.FluentCli.Tests.Parser
             var parser = new CliParser();
             var instruction = parser.Parse(scanner, ComplexDefinition);
 
-            Assert.Equal(new List<string> { }, instruction.Commands);
-            Assert.Equal(new List<string> { }, instruction.Unnamed.Values);
+            Assert.Equal(new List<string>(), instruction.Commands);
+            Assert.Equal(new List<string>(), instruction.Unnamed.Values);
             Assert.Equal("many", instruction.Named[0].Name);
             Assert.Equal(new List<string> { "many", "args" }, instruction.Named[0].Values);
         }

@@ -11,8 +11,8 @@ namespace Wolfe.FluentCli.Core.Internal
             Options = options ?? new CliOptions();
             Commands = commands ?? new List<CliNamedCommand>();
         }
-        public Type Handler { get; set; }
-        public CliOptions Options { get; set; } = new();
-        public List<CliNamedCommand> Commands { get; set; } = new();
+        public Type Handler { get; }
+        public CliOptions Options { get; }
+        public List<CliNamedCommand> Commands { get; }
     }
 }

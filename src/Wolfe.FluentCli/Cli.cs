@@ -4,7 +4,7 @@ using Wolfe.FluentCli.Core.Builders;
 
 namespace Wolfe.FluentCli
 {
-    public class Cli
+    public static class Cli
     {
         public static IFluentCli Build(Action<ICliBuilder> cli)
         {
