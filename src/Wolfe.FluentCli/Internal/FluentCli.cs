@@ -4,11 +4,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Wolfe.FluentCli.Core;
-using Wolfe.FluentCli.Core.Exceptions;
-using Wolfe.FluentCli.Core.Models;
-using Wolfe.FluentCli.Core.Services;
+using Wolfe.FluentCli.Core.Build;
+using Wolfe.FluentCli.Core.Build.Internal;
+using Wolfe.FluentCli.Core.Run;
+using Wolfe.FluentCli.Exceptions;
 using Wolfe.FluentCli.Parser;
-using Wolfe.FluentCli.Parser.Models;
+using Wolfe.FluentCli.Parser.Definition;
 using Wolfe.FluentCli.Parser.Output;
 
 namespace Wolfe.FluentCli.Internal

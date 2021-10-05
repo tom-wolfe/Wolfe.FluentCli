@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Wolfe.FluentCli
+namespace Wolfe.FluentCli.Core.Build
 {
     public interface INamedCommandBuilder
     {

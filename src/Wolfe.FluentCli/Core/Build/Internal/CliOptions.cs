@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Wolfe.FluentCli.Core.Models
+namespace Wolfe.FluentCli.Core.Build.Internal
 {
     internal class CliOptions
     {

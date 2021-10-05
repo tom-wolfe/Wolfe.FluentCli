@@ -1,6 +1,6 @@
-﻿using Wolfe.FluentCli.Core.Models;
+﻿using Wolfe.FluentCli.Core.Build.Internal;
 
-namespace Wolfe.FluentCli.Parser.Models
+namespace Wolfe.FluentCli.Parser.Definition
 {
     internal class CliDefinition : CliCommandDefinition
     {

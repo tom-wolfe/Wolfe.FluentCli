@@ -1,4 +1,4 @@
-﻿namespace Wolfe.FluentCli.Core.Models
+﻿namespace Wolfe.FluentCli.Core.Build.Internal
 {
     internal class CliOption
     {

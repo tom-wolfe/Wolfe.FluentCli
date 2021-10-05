@@ -1,4 +1,4 @@
-﻿namespace Wolfe.FluentCli.Core
+﻿namespace Wolfe.FluentCli.Core.Build.Public
 {
     public class CliParameter
     {

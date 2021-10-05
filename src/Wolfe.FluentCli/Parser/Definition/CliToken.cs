@@ -1,4 +1,4 @@
-﻿namespace Wolfe.FluentCli.Parser.Models
+﻿namespace Wolfe.FluentCli.Parser.Definition
 {
     internal record CliToken
     {

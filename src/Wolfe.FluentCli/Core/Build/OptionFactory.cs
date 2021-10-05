@@ -1,6 +1,6 @@
-﻿using Wolfe.FluentCli.Core.Models;
+﻿using Wolfe.FluentCli.Core.Run;
 
-namespace Wolfe.FluentCli.Core
+namespace Wolfe.FluentCli.Core.Build
 {
     public delegate object OptionFactory(CliContext context);
 }

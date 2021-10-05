@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Wolfe.FluentCli.Core.Exceptions;
-using Wolfe.FluentCli.Parser.Models;
+using Wolfe.FluentCli.Exceptions;
+using Wolfe.FluentCli.Parser.Definition;
 using Wolfe.FluentCli.Parser.Output;
 
 namespace Wolfe.FluentCli.Parser

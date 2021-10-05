@@ -1,6 +1,6 @@
-﻿using Wolfe.FluentCli.Core;
+﻿using Wolfe.FluentCli.Core.Build.Public;
 
-namespace Wolfe.FluentCli
+namespace Wolfe.FluentCli.Core.Build
 {
     public interface IOptionsBuilder<TArgs>
     {

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Wolfe.FluentCli.Core.Models;
+using Wolfe.FluentCli.Core.Build.Internal;
+using Wolfe.FluentCli.Core.Run;
 using Wolfe.FluentCli.Internal;
 
 namespace Wolfe.FluentCli.Options

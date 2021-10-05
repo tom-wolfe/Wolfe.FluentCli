@@ -1,8 +1,7 @@
 ﻿using System;
-using Wolfe.FluentCli.Core;
-using Wolfe.FluentCli.Core.Services;
+using Wolfe.FluentCli.Core.Build;
 
-namespace Wolfe.FluentCli
+namespace Wolfe.FluentCli.Core
 {
     public interface ICliBuilder
     {

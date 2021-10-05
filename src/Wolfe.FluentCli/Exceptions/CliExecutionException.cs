@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Wolfe.FluentCli.Core.Exceptions
+namespace Wolfe.FluentCli.Exceptions
 {
     [Serializable]
     public class CliExecutionException : Exception

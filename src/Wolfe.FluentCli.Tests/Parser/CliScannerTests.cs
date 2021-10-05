@@ -1,5 +1,5 @@
 ﻿using Wolfe.FluentCli.Parser;
-using Wolfe.FluentCli.Parser.Models;
+using Wolfe.FluentCli.Parser.Definition;
 using Wolfe.FluentCli.Tests.Extensions;
 using Xunit;
 

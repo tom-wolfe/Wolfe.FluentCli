@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Wolfe.FluentCli.Parser.Models;
+using Wolfe.FluentCli.Parser.Definition;
 
 namespace Wolfe.FluentCli.Parser
 {

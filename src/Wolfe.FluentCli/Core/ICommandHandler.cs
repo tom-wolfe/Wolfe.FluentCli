@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Wolfe.FluentCli.Core.Models;
+using Wolfe.FluentCli.Core.Run;
 
 namespace Wolfe.FluentCli.Core
 {

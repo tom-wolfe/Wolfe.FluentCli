@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Wolfe.FluentCli.Core
+namespace Wolfe.FluentCli.Core.Run
 {
     public class CliNamedArgument : CliArgument
     {

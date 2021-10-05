@@ -1,8 +1,6 @@
 ﻿using System;
-using Wolfe.FluentCli.Core.Models;
-using Wolfe.FluentCli.Internal;
 
-namespace Wolfe.FluentCli
+namespace Wolfe.FluentCli.Core.Build
 {
     public interface ICommandBuilder
     {
