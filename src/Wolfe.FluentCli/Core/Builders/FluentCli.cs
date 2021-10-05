@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Core.Internal;
 using Wolfe.FluentCli.Exceptions;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Definition;
 using Wolfe.FluentCli.Parser.Output;
 
-namespace Wolfe.FluentCli.Internal
+namespace Wolfe.FluentCli.Core.Builders
 {
     internal class FluentCli : IFluentCli
     {
@@ -72,18 +71,18 @@ namespace Wolfe.FluentCli.Internal
             return currentCommand;
         }
 
-        private object ResolveArguments(CliContext context, CliCommand command)
+        private static object ResolveArguments(CliContext context, CliCommand command)
         {
             if (command.Options == null) { return null; }
 
             var options = command.Options.Options;
 
             // Validate all required options have been passed.
-            var missingRequiredOptions = options
-                .Where(o => o.Required && !context.NamedArguments.Any(n => n.Name == o.LongName))
+            var missingOptions = options
+                .Where(o => o.Required && context.NamedArguments.All(n => n.Name != o.LongName))
                 .Select(o => o.LongName).ToList();
-            if (missingRequiredOptions.Any())
-                throw new CliInterpreterException($"The following arguments are required: {string.Join(' ', missingRequiredOptions)}.");
+            if (missingOptions.Any())
+                throw new CliInterpreterException($"The following arguments are required: {string.Join(' ', missingOptions)}.");
 
             return command.Options.Factory(context);
         }

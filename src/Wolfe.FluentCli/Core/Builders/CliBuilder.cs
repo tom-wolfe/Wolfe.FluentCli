@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Wolfe.FluentCli.Commands;
-using Wolfe.FluentCli.Core;
-using Wolfe.FluentCli.Core.Builders;
 using Wolfe.FluentCli.Core.Internal;
 using Wolfe.FluentCli.Parser;
 
-namespace Wolfe.FluentCli.Internal
+namespace Wolfe.FluentCli.Core.Builders
 {
     internal class CliBuilder : ICliBuilder
     {

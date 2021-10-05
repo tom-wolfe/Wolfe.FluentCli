@@ -49,7 +49,7 @@ namespace Wolfe.FluentCli.Parser
 
         private static CliParsedArgument ParseUnnamedArguments(ICliScanner scanner, CliCommandDefinition definition)
         {
-            var values = ParseArgumentValues(scanner, definition.Unnamed.AllowedValues);
+            var values = ParseArgumentValues(scanner);
             return new CliParsedArgument(values);
         }
 
@@ -78,12 +78,12 @@ namespace Wolfe.FluentCli.Parser
             var name = token.Value;
 
             var currentArg = FindArgument(definition, marker.Type, name);
-            var values = ParseArgumentValues(scanner, currentArg.AllowedValues);
+            var values = ParseArgumentValues(scanner);
 
             return new CliParsedNamedArgument(currentArg.LongName, values);
         }
 
-        private static List<string> ParseArgumentValues(ICliScanner scanner, AllowedValues allowedValues)
+        private static List<string> ParseArgumentValues(ICliScanner scanner)
         {
             var values = new List<string>();
             while (true)
@@ -93,21 +93,6 @@ namespace Wolfe.FluentCli.Parser
                 values.Add(token.Value);
                 scanner.Read();
             }
-
-            switch (allowedValues)
-            {
-                case AllowedValues.Many:
-                    break;
-                case AllowedValues.One:
-                    if (values.Count != 1) throw new CliInterpreterException("Command requires one unnamed argument.");
-                    break;
-                case AllowedValues.None:
-                    if (values.Count != 0) throw new CliInterpreterException("Command does not allow unnamed arguments.");
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException($"Unexpected {nameof(AllowedValues)} value: {allowedValues}");
-            }
-
             return values;
         }
 

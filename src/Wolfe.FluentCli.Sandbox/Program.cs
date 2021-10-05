@@ -21,7 +21,7 @@ namespace Wolfe.FluentCli.Sandbox
             await cli.Execute("--name Tom -a 31");
             await cli.Execute("foo");
             await cli.Execute("foo hello -n \"Joe Bloggs\"");
-            await cli.Execute("foo hello -n \"Joe Bloggs\" --colors red green blue");
+            await cli.Execute("foo hello unnamed -n \"Joe Bloggs\" --colors red green blue");
             await cli.Execute("foo bar");
             Console.ReadLine();
         }
@@ -29,6 +29,8 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class TestArgs
     {
+        [CliDefaultOption]
+        public string Unnamed { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
         public List<string> Colors { get; set; } = new();
@@ -38,7 +40,7 @@ namespace Wolfe.FluentCli.Sandbox
     {
         public Task Execute(CliContext context, TestArgs options)
         {
-            Console.WriteLine($"Default: {options.Name} is {options.Age} years old");
+            Console.WriteLine($"Default: {options.Unnamed} - {options.Name} is {options.Age} years old");
             return Task.CompletedTask;
         }
     }
@@ -47,7 +49,7 @@ namespace Wolfe.FluentCli.Sandbox
     {
         public Task Execute(CliContext context, TestArgs options)
         {
-            Console.WriteLine($"Hello {options.Name}! Your favorite colors are {string.Join(", ", options.Colors)}");
+            Console.WriteLine($"Default: {options.Unnamed} - Hello {options.Name}! Your favorite colors are {string.Join(", ", options.Colors)}");
             return Task.CompletedTask;
         }
     }

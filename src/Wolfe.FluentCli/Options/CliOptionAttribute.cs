@@ -3,9 +3,9 @@
 namespace Wolfe.FluentCli.Options
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class FluentCliOptionAttribute : Attribute
+    public class CliOptionAttribute : Attribute
     {
-        public FluentCliOptionAttribute(string shortName, string longName, bool required = false)
+        public CliOptionAttribute(string shortName, string longName, bool required = false)
         {
             ShortName = shortName;
             LongName = longName;

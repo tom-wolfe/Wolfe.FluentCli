@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Wolfe.FluentCli.Core;
+using Wolfe.FluentCli.Core.Builders;
 using Wolfe.FluentCli.Core.Internal;
-using Wolfe.FluentCli.Internal;
 
 namespace Wolfe.FluentCli.Options
 {
     internal class DynamicArgumentFactory<TArgs>
     {
+        private const string UNNAMED_ARG_NAME = "";
         private readonly Dictionary<string, (CliOption, PropertyInfo)> _propertyMap;
 
         public DynamicArgumentFactory()
@@ -32,40 +33,37 @@ namespace Wolfe.FluentCli.Options
 
         private void ApplyTo(object model, CliContext context)
         {
+            var unnamed = _propertyMap[UNNAMED_ARG_NAME];
+            SetArgumentValue(model, unnamed.Item2, context.UnnamedArguments);
+
             foreach (var arg in context.NamedArguments)
             {
-                var map = _propertyMap[arg.Name];
-                if (map == default) continue;
+                var (_, property) = _propertyMap[arg.Name];
+                if (property == null) continue;
 
-                
-                // Check if it's a scalar/list value
-                object argValue = GetPropertyAllowedValues(map.Item2) switch
-                {
-                    AllowedValues.None => true,
-                    AllowedValues.One => arg.Value,
-                    AllowedValues.Many => arg.Values,
-                    _ => throw new Exception("Panic")
-                };
-
-                var propValue = Convert.ChangeType(argValue, map.Item2.PropertyType);
-                map.Item2.SetValue(model, propValue);
+                SetArgumentValue(model, property, arg);
             }
+        }
+
+        private static void SetArgumentValue(object model, PropertyInfo property, CliArgument arg)
+        {
+            // Check if it's a scalar/list value
+            object argValue = GetPropertyAllowedValues(property) switch
+            {
+                AllowedValues.None => true,
+                AllowedValues.One => arg.Value,
+                AllowedValues.Many => arg.Values,
+                _ => throw new Exception("Panic")
+            };
+
+            var propValue = Convert.ChangeType(argValue, property.PropertyType);
+            property.SetValue(model, propValue);
         }
 
         private static CliOption CreateOption(PropertyInfo property)
         {
             var strategy = new KebabCasePropertyNamingStrategy();
-            if (property.GetCustomAttributes(typeof(FluentCliOptionAttribute), true).FirstOrDefault() is not FluentCliOptionAttribute attribute)
-            {
-                return new CliOption
-                {
-                    ShortName = strategy.GetShortName(property),
-                    LongName = strategy.GetLongName(property),
-                    Required = false,
-                    AllowedValues = GetPropertyAllowedValues(property)
-                };
-            }
-            else
+            if (property.GetCustomAttributes(typeof(CliOptionAttribute), true).FirstOrDefault() is CliOptionAttribute attribute)
             {
                 return new CliOption
                 {
@@ -75,6 +73,24 @@ namespace Wolfe.FluentCli.Options
                     AllowedValues = GetPropertyAllowedValues(property)
                 };
             }
+            if (property.GetCustomAttributes(typeof(CliDefaultOptionAttribute), true).FirstOrDefault() is CliDefaultOptionAttribute attr)
+            {
+                return new CliOption
+                {
+                    ShortName = UNNAMED_ARG_NAME,
+                    LongName = UNNAMED_ARG_NAME,
+                    Required = attr.Required,
+                    AllowedValues = GetPropertyAllowedValues(property)
+                };
+            }
+
+            return new CliOption
+            {
+                ShortName = strategy.GetShortName(property),
+                LongName = strategy.GetLongName(property),
+                Required = false,
+                AllowedValues = GetPropertyAllowedValues(property)
+            };
         }
 
         private static AllowedValues GetPropertyAllowedValues(PropertyInfo property)

@@ -21,17 +21,21 @@ namespace Wolfe.FluentCli.Parser.Definition
 
         private static void AssignCommand(CliCommand command, CliCommandDefinition def)
         {
-            // TODO: Set unnamed args.
-            def.Unnamed.AllowedValues = AllowedValues.None;
-
             foreach (var namedArg in command.Options.Options)
             {
-                def.NamedArguments.Add(new CliNamedArgumentDefinition
+                if (string.IsNullOrWhiteSpace(namedArg.LongName))
                 {
-                    AllowedValues = namedArg.AllowedValues,
-                    LongName = namedArg.LongName,
-                    ShortName = namedArg.ShortName
-                });
+                    def.Unnamed.AllowedValues = namedArg.AllowedValues;
+                }
+                else
+                {
+                    def.NamedArguments.Add(new CliNamedArgumentDefinition
+                    {
+                        AllowedValues = namedArg.AllowedValues,
+                        LongName = namedArg.LongName,
+                        ShortName = namedArg.ShortName
+                    });
+                }
             }
 
             foreach (var cmd in command.Commands)

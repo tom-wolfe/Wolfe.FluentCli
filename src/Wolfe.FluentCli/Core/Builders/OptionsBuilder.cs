@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wolfe.FluentCli.Core;
-using Wolfe.FluentCli.Core.Builders;
 using Wolfe.FluentCli.Core.Internal;
 using Wolfe.FluentCli.Exceptions;
 
-namespace Wolfe.FluentCli.Internal
+namespace Wolfe.FluentCli.Core.Builders
 {
     internal class OptionsBuilder<TArgs> : IOptionsBuilder<TArgs>
     {
