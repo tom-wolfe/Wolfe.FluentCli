@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Wolfe.FluentCli.Core.Exceptions;
 using Wolfe.FluentCli.Core.Models;
-using Wolfe.FluentCli.Exceptions;
+using Wolfe.FluentCli.Core.Services;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Models;
 
@@ -13,10 +14,10 @@ namespace Wolfe.FluentCli.Core
     internal class FluentCli : IFluentCli
     {
         private readonly ICliParser _parser;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ServiceProvider _serviceProvider;
         private readonly CliCommand _rootCliCommand;
 
-        public FluentCli(IServiceProvider serviceProvider, ICliParser parser, CliCommand rootCliCommand)
+        public FluentCli(ServiceProvider serviceProvider, ICliParser parser, CliCommand rootCliCommand)
         {
             _parser = parser;
             _serviceProvider = serviceProvider;
@@ -36,15 +37,15 @@ namespace Wolfe.FluentCli.Core
 
         protected virtual async Task ExecuteCore(CliContext context, object options)
         {
-            var handler = _serviceProvider.GetService(context.Command.Handler) ??
-                          throw new CommandHandlerException(context.Command.Handler.Name, "Unable to resolve from service provider.");
+            var handler = _serviceProvider(context.Command.Handler) ??
+                          throw new CliExecutionException($"Unable to resolve {context.Command.Handler.Name}from service provider.");
 
             var handlerType = handler.GetType();
 
             var executeMethod = handlerType.GetMethod(nameof(ICommandHandler.Execute),
                 BindingFlags.Public | BindingFlags.Instance);
             if (executeMethod == null)
-                throw new CommandHandlerException(context.Command.Handler.Name, $"Unable to find appropriate {nameof(ICommandHandler.Execute)} method.");
+                throw new CliExecutionException($"Unable to find appropriate {context.Command.Handler.Name}.{nameof(ICommandHandler.Execute)} method.");
 
             var args = new List<object> { context };
 
@@ -63,7 +64,7 @@ namespace Wolfe.FluentCli.Core
             {
                 var nextCommand = currentCommand.SubCommands
                     .Find(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
-                currentCommand = nextCommand ?? throw new CommandNotFoundException(currentCommandChain, commandName);
+                currentCommand = nextCommand ?? throw new CliInterpreterException($"Unrecognized command chain: {string.Join(' ', currentCommandChain)} {commandName}.");
                 currentCommandChain.Add(commandName);
             }
 
@@ -82,7 +83,7 @@ namespace Wolfe.FluentCli.Core
             {
                 var opt = options.Find(o => o.LongName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase)
                                             || o.ShortName.Equals(argument.Name, StringComparison.OrdinalIgnoreCase));
-                if (opt == null) throw new InvalidCommandOptionException(command.Handler.Name, argument.Name);
+                if (opt == null) throw new CliInterpreterException($"Unrecognized argument {argument.Name} for command {command.Handler.Name}");
                 normalizedOptions.Add(opt.LongName, argument);
             }
 
@@ -91,7 +92,7 @@ namespace Wolfe.FluentCli.Core
                 .Where(o => o.Required && !normalizedOptions.Keys.Contains(o.LongName))
                 .Select(o => o.LongName).ToList();
             if (missingRequiredOptions.Any())
-                throw new MissingArgumentsException(missingRequiredOptions);
+                throw new CliInterpreterException($"The following arguments are required: {string.Join(' ', missingRequiredOptions)}.");
 
             return command.Options.OptionMap(normalizedOptions);
         }

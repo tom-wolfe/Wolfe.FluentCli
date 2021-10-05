@@ -1,6 +1,4 @@
-﻿using Wolfe.FluentCli.Core.Models;
-
-namespace Wolfe.FluentCli
+﻿namespace Wolfe.FluentCli.Core.Models
 {
     public class CliContext
     {

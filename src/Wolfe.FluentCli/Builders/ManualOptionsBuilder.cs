@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Wolfe.FluentCli.Core.Exceptions;
 using Wolfe.FluentCli.Core.Models;
-using Wolfe.FluentCli.Exceptions;
 
-namespace Wolfe.FluentCli.Core
+namespace Wolfe.FluentCli.Builders
 {
     internal class ManualOptionsBuilder<TArgs> : IManualOptionsBuilder<TArgs>
     {
@@ -21,10 +21,10 @@ namespace Wolfe.FluentCli.Core
         public IManualOptionsBuilder<TArgs> AddOption(CliOption option)
         {
             if (_options.Find(o => o.ShortName.Equals(option.ShortName, StringComparison.OrdinalIgnoreCase)) != null)
-                throw new DuplicateCommandOptionException(option.ShortName);
+                throw new CliBuildException($"Command with short name {option.ShortName} already exists.");
 
             if (_options.Find(o => o.LongName.Equals(option.LongName, StringComparison.OrdinalIgnoreCase)) != null)
-                throw new DuplicateCommandOptionException(option.LongName);
+                throw new CliBuildException($"Command with long name {option.LongName} already exists.");
 
             _options.Add(option);
             return this;

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Wolfe.FluentCli.Core;
+using Wolfe.FluentCli.Core.Models;
+using Wolfe.FluentCli.Mapping;
 
 namespace Wolfe.FluentCli.Sandbox
 {
@@ -7,13 +10,13 @@ namespace Wolfe.FluentCli.Sandbox
     {
         static async Task Main()
         {
-            var cli = FluentCliBuilder.Create()
+            var cli = Cli.Build(cli => cli
                 .WithDefaultCommand<DefaultCommandHandler, DefaultCommandOptions>()
                 .AddCommand("foo", hello => hello
                     .AddCommand<HelloCommandHandler, HelloCommandOptions>("hello")
                     .AddCommand<BarCommandHandler>("bar")
                 )
-                .Build();
+            );
 
             await cli.Execute("--first-name Tom -a 31 years old");
             await cli.Execute("foo");

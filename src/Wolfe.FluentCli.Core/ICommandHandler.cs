@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Wolfe.FluentCli.Core.Models;
 
-namespace Wolfe.FluentCli
+namespace Wolfe.FluentCli.Core
 {
     public interface ICommandHandler
     {

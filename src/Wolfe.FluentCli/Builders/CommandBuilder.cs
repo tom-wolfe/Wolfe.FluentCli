@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Wolfe.FluentCli.Commands;
 using Wolfe.FluentCli.Core.Models;
 
-namespace Wolfe.FluentCli.Core
+namespace Wolfe.FluentCli.Builders
 {
     internal class CommandBuilder : ICommandBuilder, IDefaultCommandBuilder
     {

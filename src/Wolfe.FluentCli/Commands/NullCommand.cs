@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Wolfe.FluentCli.Core;
+using Wolfe.FluentCli.Core.Models;
 
 namespace Wolfe.FluentCli.Commands
 {

@@ -3,8 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wolfe.FluentCli.Core.Exceptions;
 using Wolfe.FluentCli.Core.Models;
-using Wolfe.FluentCli.Parser.Exceptions;
 using Wolfe.FluentCli.Parser.Models;
 
 namespace Wolfe.FluentCli.Parser
@@ -23,7 +23,7 @@ namespace Wolfe.FluentCli.Parser
 
             var nextToken = scanner.Read();
             if (nextToken != CliToken.Eof)
-                throw new CommandParsingException($"Unexpected token {nextToken.Type}");
+                throw new CliInterpreterException($"Unexpected token {nextToken.Type}");
 
             return new CliInstruction
             {
@@ -77,7 +77,7 @@ namespace Wolfe.FluentCli.Parser
 
             var token = scanner.Read();
             if (token.Type != CliTokenType.Identifier)
-                throw new CommandParsingException($"Expected argument identifier, but found {token.Type}");
+                throw new CliInterpreterException($"Expected argument identifier, but found {token.Type}");
 
             var name = token.Value;
 
@@ -103,10 +103,10 @@ namespace Wolfe.FluentCli.Parser
                 case AllowedValues.Many:
                     break;
                 case AllowedValues.One:
-                    if (values.Count != 1) throw new CommandParsingException("Command requires one unnamed argument.");
+                    if (values.Count != 1) throw new CliInterpreterException("Command requires one unnamed argument.");
                     break;
                 case AllowedValues.None:
-                    if (values.Count != 0) throw new CommandParsingException("Command does not allow unnamed arguments.");
+                    if (values.Count != 0) throw new CliInterpreterException("Command does not allow unnamed arguments.");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException($"Unexpected {nameof(AllowedValues)} value: {allowedValues}");

@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Numerics;
 using Wolfe.FluentCli.Parser;
 using Wolfe.FluentCli.Parser.Models;
-using Wolfe.FluentCli.Tests.Extensions;
 using Xunit;
 
 namespace Wolfe.FluentCli.Tests.Parser

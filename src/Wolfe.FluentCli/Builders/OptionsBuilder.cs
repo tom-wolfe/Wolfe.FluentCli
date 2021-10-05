@@ -4,7 +4,7 @@ using System.Reflection;
 using Wolfe.FluentCli.Core.Models;
 using Wolfe.FluentCli.Mapping;
 
-namespace Wolfe.FluentCli.Core
+namespace Wolfe.FluentCli.Builders
 {
     internal class OptionsBuilder<TArgs> : IOptionsBuilder<TArgs>
     {

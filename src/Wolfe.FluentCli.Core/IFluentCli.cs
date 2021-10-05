@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Wolfe.FluentCli
+namespace Wolfe.FluentCli.Core
 {
     public interface IFluentCli
     {
