@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Wolfe.FluentCli.Core.Run
+namespace Wolfe.FluentCli.Core
 {
     public class CliArgument
     {

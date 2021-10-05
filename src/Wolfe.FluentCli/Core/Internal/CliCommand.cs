@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Wolfe.FluentCli.Core.Build.Internal
+namespace Wolfe.FluentCli.Core.Internal
 {
     internal class CliCommand
     {

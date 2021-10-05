@@ -1,4 +1,4 @@
-﻿using Wolfe.FluentCli.Core.Build.Internal;
+﻿using Wolfe.FluentCli.Core.Internal;
 
 namespace Wolfe.FluentCli.Parser.Definition
 {

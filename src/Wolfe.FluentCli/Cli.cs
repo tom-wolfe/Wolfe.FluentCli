@@ -1,5 +1,6 @@
 ﻿using System;
 using Wolfe.FluentCli.Core;
+using Wolfe.FluentCli.Core.Builders;
 using Wolfe.FluentCli.Internal;
 
 namespace Wolfe.FluentCli

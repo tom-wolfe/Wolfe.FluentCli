@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Wolfe.FluentCli.Core.Build;
-using Wolfe.FluentCli.Core.Build.Internal;
-using Wolfe.FluentCli.Core.Build.Public;
+using Wolfe.FluentCli.Core;
+using Wolfe.FluentCli.Core.Builders;
+using Wolfe.FluentCli.Core.Internal;
 using Wolfe.FluentCli.Exceptions;
 
 namespace Wolfe.FluentCli.Internal
@@ -13,19 +13,12 @@ namespace Wolfe.FluentCli.Internal
         private OptionFactory _optionFactory;
 
         public IOptionsBuilder<TArgs> AddOption(string shortName, string longName, bool required) =>
-            AddOption(new CliParameter
+            AddOption(new CliOption
             {
                 ShortName = shortName,
                 LongName = longName,
                 Required = required
             });
-
-        public IOptionsBuilder<TArgs> AddOption(CliParameter parameter) => AddOption(new CliOption()
-        {
-            LongName = parameter.LongName,
-            ShortName = parameter.ShortName,
-            Required = parameter.Required
-        });
 
         public IOptionsBuilder<TArgs> AddOption(CliOption parameter)
         {
