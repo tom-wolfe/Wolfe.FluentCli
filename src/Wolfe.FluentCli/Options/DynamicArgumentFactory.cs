@@ -11,7 +11,7 @@ namespace Wolfe.FluentCli.Options
     internal class DynamicArgumentFactory<TArgs>
     {
         private const string UNNAMED_ARG_NAME = "";
-        private readonly Dictionary<string, (CliOption, PropertyInfo)> _propertyMap;
+        private readonly Dictionary<string, (CliParameter, PropertyInfo)> _propertyMap;
 
         public DynamicArgumentFactory()
         {
@@ -25,10 +25,10 @@ namespace Wolfe.FluentCli.Options
             return model;
         }
 
-        public void ConfigureBuilder(OptionsBuilder<TArgs> options)
+        public void ConfigureBuilder(ArgumentBuilder<TArgs> options)
         {
             foreach (var option in _propertyMap)
-                options.AddOption(option.Value.Item1);
+                options.AddArgument(option.Value.Item1);
         }
 
         private void ApplyTo(object model, CliContext context)
@@ -60,12 +60,12 @@ namespace Wolfe.FluentCli.Options
             property.SetValue(model, propValue);
         }
 
-        private static CliOption CreateOption(PropertyInfo property)
+        private static CliParameter CreateOption(PropertyInfo property)
         {
             var strategy = new KebabCasePropertyNamingStrategy();
             if (property.GetCustomAttributes(typeof(CliOptionAttribute), true).FirstOrDefault() is CliOptionAttribute attribute)
             {
-                return new CliOption
+                return new CliParameter
                 {
                     ShortName = attribute.ShortName,
                     LongName = attribute.LongName,
@@ -75,7 +75,7 @@ namespace Wolfe.FluentCli.Options
             }
             if (property.GetCustomAttributes(typeof(CliDefaultOptionAttribute), true).FirstOrDefault() is CliDefaultOptionAttribute attr)
             {
-                return new CliOption
+                return new CliParameter
                 {
                     ShortName = UNNAMED_ARG_NAME,
                     LongName = UNNAMED_ARG_NAME,
@@ -84,7 +84,7 @@ namespace Wolfe.FluentCli.Options
                 };
             }
 
-            return new CliOption
+            return new CliParameter
             {
                 ShortName = strategy.GetShortName(property),
                 LongName = strategy.GetLongName(property),

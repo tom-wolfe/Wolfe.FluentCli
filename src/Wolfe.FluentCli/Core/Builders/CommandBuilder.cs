@@ -11,7 +11,7 @@ namespace Wolfe.FluentCli.Core.Builders
         private readonly string _name;
         private readonly Type _handlerType;
         private readonly List<CliNamedCommand> _commands = new();
-        private CliOptions _options;
+        private CliArguments _options;
 
         public CommandBuilder() : this("", null) { }
 
@@ -39,21 +39,21 @@ namespace Wolfe.FluentCli.Core.Builders
             return this;
         }
 
-        ICommandBuilder ICommandBuilder.WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options)
+        ICommandBuilder ICommandBuilder.WithOptions<TArgs>(Action<IArgumentsBuilder<TArgs>> options)
         {
             WithOptionsCore(options);
             return this;
         }
 
-        INamedCommandBuilder INamedCommandBuilder.WithOptions<TArgs>(Action<IOptionsBuilder<TArgs>> options)
+        INamedCommandBuilder INamedCommandBuilder.WithOptions<TArgs>(Action<IArgumentsBuilder<TArgs>> options)
         {
             WithOptionsCore(options);
             return this;
         }
 
-        private void WithOptionsCore<TArgs>(Action<IOptionsBuilder<TArgs>> options = null)
+        private void WithOptionsCore<TArgs>(Action<IArgumentsBuilder<TArgs>> options = null)
         {
-            var builder = new OptionsBuilder<TArgs>();
+            var builder = new ArgumentBuilder<TArgs>();
 
             if (options == null)
             {

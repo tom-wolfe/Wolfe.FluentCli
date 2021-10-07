@@ -11,7 +11,7 @@ namespace Wolfe.FluentCli.Sandbox
         static async Task Main()
         {
             var cli = Cli.Build(cli => cli
-                .WithDefaultCommand<DefaultCommandHandler, TestArgs>()
+                .WithDefault<DefaultCommandHandler, TestArgs>()
                 .AddCommand("foo", hello => hello
                     .AddCommand<HelloCommandHandler, TestArgs>("hello")
                     .AddCommand<BarCommandHandler>("bar")

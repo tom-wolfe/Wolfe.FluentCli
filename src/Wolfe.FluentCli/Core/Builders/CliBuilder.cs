@@ -22,10 +22,10 @@ namespace Wolfe.FluentCli.Core.Builders
             return this;
         }
 
-        public ICliBuilder WithDefaultCommand<THandler, TArgs>() =>
-            WithDefaultCommand<THandler>(command => command.WithOptions<TArgs>());
+        public ICliBuilder WithDefault<THandler, TArgs>() =>
+            WithDefault<THandler>(command => command.WithOptions<TArgs>());
 
-        public ICliBuilder WithDefaultCommand<THandler>(Action<ICommandBuilder> command = null)
+        public ICliBuilder WithDefault<THandler>(Action<ICommandBuilder> command = null)
         {
             var builder = new CommandBuilder("", typeof(THandler));
             command?.Invoke(builder);
