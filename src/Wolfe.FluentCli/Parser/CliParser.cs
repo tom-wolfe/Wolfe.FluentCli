@@ -78,6 +78,8 @@ namespace Wolfe.FluentCli.Parser
             var name = token.Value;
 
             var currentArg = FindArgument(definition, marker.Type, name);
+            if (currentArg == null) { throw new CliInterpreterException($"Invalid argument '{name}'."); }
+
             var values = ParseArgumentValues(scanner);
 
             return new CliParsedNamedArgument(currentArg.LongName, values);
