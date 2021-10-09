@@ -33,7 +33,6 @@ namespace Wolfe.FluentCli.Core.Builders
         /// <summary>
         /// Specifies the command handler that should be invoked when the given <paramref name="name"/> is passed.
         /// </summary>
-        /// <typeparam name="THandler">A type that implements <see cref="ICommandHandler"/> that will handle the command.</typeparam>
         /// <param name="name">The name used to invoke the command.</param>
         /// <param name="command">A method that describes how the command should be configured.</param>
         /// <returns>The current <see cref="ICliBuilder"/> instance.</returns>
@@ -54,7 +53,6 @@ namespace Wolfe.FluentCli.Core.Builders
         /// <typeparam name="THandler">A type that implements <see cref="ICommandHandler"/> that will handle the command.</typeparam>
         /// <typeparam name="TArgs">The type of arguments that the command handler accepts.</typeparam>
         /// <param name="name">The name used to invoke the command.</param>
-        /// <param name="command">A method that describes how the command should be configured.</param>
         /// <returns>The current <see cref="ICliBuilder"/> instance.</returns>
         ICliBuilder AddCommand<THandler, TArgs>(string name);
 
