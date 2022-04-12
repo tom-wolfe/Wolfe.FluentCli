@@ -24,7 +24,7 @@ namespace Wolfe.FluentCli.Core.Builders
             _rootCliCommand = rootCliCommand;
         }
 
-        public async Task Execute(string args)
+        public async Task ExecuteAsync(string args)
         {
             var scanner = new CliScanner(args);
             var cliDefinition = CliDefinition.FromCommand(_rootCliCommand);
@@ -32,10 +32,10 @@ namespace Wolfe.FluentCli.Core.Builders
             var context = BuildContext(result);
             var command = ResolveCommand(context);
             var options = ResolveArguments(context, command);
-            await ExecuteCore(context, options, command);
+            await ExecuteCoreAsync(context, options, command);
         }
 
-        private async Task ExecuteCore(CliContext context, object options, CliCommand command)
+        private async Task ExecuteCoreAsync(CliContext context, object options, CliCommand command)
         {
             var handler = _serviceProvider(command.Handler) ??
                           throw new CliExecutionException($"Unable to resolve {command.Handler.Name}from service provider.");

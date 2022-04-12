@@ -28,7 +28,7 @@ namespace Wolfe.FluentCli.Tests.E2e
                 .WithDefault<ICommandHandler>()
             );
 
-            await cli.Execute("");
+            await cli.ExecuteAsync("");
 
             command.Verify(c => c.Execute(It.IsAny<CliContext>()), Times.Once);
         }
@@ -47,10 +47,10 @@ namespace Wolfe.FluentCli.Tests.E2e
                 .WithDefault<ICommandHandler<MockArgs>, MockArgs>()
             );
 
-            Func<Task> act = () => cli.Execute("--bogus test1 test2");
+            Func<Task> act = () => cli.ExecuteAsync("--bogus test1 test2");
 
             await act.Should().ThrowAsync<CliInterpreterException>().WithMessage("*invalid argument*");
-            // command.Verify(c => c.Execute(It.IsAny<CliContext>(), It.Is<MockArgs>(a => a.Names.Count == 2)), Times.Once);
+            // command.Verify(c => c.ExecuteAsync(It.IsAny<CliContext>(), It.Is<MockArgs>(a => a.Names.Count == 2)), Times.Once);
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace Wolfe.FluentCli.Tests.E2e
                 .WithDefault<ICommandHandler<MockArgs>, MockArgs>()
             );
 
-            await cli.Execute("test1 test2");
+            await cli.ExecuteAsync("test1 test2");
 
             Expression<Func<MockArgs, bool>> args = args => args.Names[0] == "test1" && args.Names[1] == "test2";
 
