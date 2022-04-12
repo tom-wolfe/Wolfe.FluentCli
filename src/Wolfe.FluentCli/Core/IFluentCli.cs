@@ -14,6 +14,6 @@ namespace Wolfe.FluentCli.Core
         /// <returns>A <see cref="Task"/> object representing the execution of the command.</returns>
         /// <exception cref="CliInterpreterException">Thrown when the given <paramref name="command"/> cannot be mapped to a command and its arguments as defined within the CLI.</exception>
         /// /// <exception cref="CliExecutionException">Thrown when the command was mapped successfully, but CLI is unable to execute the command, either due to service resolution or the handler itself throwing an exception.</exception>
-        Task Execute(string command);
+        Task ExecuteAsync(string command);
     }
 }

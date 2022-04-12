@@ -18,11 +18,11 @@ namespace Wolfe.FluentCli.Sandbox
                 )
             );
 
-            await cli.Execute("--name Tom -a 31");
-            await cli.Execute("foo");
-            await cli.Execute("foo hello -n \"John Smith\"");
-            await cli.Execute("foo hello unnamed -n \"John Smith\" --colors red green blue");
-            await cli.Execute("foo bar");
+            await cli.ExecuteAsync("--name Tom -a 31");
+            await cli.ExecuteAsync("foo");
+            await cli.ExecuteAsync("foo hello -n \"John Smith\"");
+            await cli.ExecuteAsync("foo hello unnamed -n \"John Smith\" --colors red green blue");
+            await cli.ExecuteAsync("foo bar");
             Console.ReadLine();
         }
     }
