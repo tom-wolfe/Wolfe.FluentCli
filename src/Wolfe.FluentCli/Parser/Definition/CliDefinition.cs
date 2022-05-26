@@ -21,7 +21,7 @@ namespace Wolfe.FluentCli.Parser.Definition
 
         private static void AssignCommand(CliCommand command, CliCommandDefinition def)
         {
-            foreach (var namedArg in command.Options.Options)
+            foreach (var namedArg in command.Arguments.Parameters)
             {
                 if (string.IsNullOrWhiteSpace(namedArg.LongName))
                 {

@@ -6,13 +6,13 @@ namespace Wolfe.FluentCli.Core.Internal
     {
         public CliArguments() : this(null, null) { }
 
-        public CliArguments(List<CliParameter> options, ArgumentsFactory factory)
+        public CliArguments(List<CliParameter> parameters, ArgumentsFactory factory)
         {
-            Options = options ?? new List<CliParameter>();
+            Parameters = parameters ?? new List<CliParameter>();
             Factory = factory ?? (_ => null);
         }
 
-        public List<CliParameter> Options { get; }
+        public List<CliParameter> Parameters { get; }
         public ArgumentsFactory Factory { get; }
     }
 }

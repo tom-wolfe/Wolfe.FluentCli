@@ -55,11 +55,5 @@ namespace Wolfe.FluentCli.Core.Builders
         /// <param name="name">The name used to invoke the command.</param>
         /// <returns>The current <see cref="ICliBuilder"/> instance.</returns>
         ICliBuilder AddCommand<THandler, TArgs>(string name);
-
-        /// <summary>
-        /// Builds the CLI and prepare it for receiving commands.
-        /// </summary>
-        /// <returns>The built CLI instance.</returns>
-        IFluentCli Build();
     }
 }

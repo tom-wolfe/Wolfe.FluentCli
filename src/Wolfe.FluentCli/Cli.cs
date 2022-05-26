@@ -1,6 +1,7 @@
 ﻿using System;
 using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Core.Builders;
+using Wolfe.FluentCli.Exceptions;
 
 namespace Wolfe.FluentCli
 {
@@ -14,7 +15,7 @@ namespace Wolfe.FluentCli
         /// <exception cref="CliBuildException">Thrown when the configuration defined by <paramref name="cli"/> would create a <see cref="IFluentCli"/> with an invalid definition. This is often due to something like duplicate command or argument names.</exception>
         public static IFluentCli Build(Action<ICliBuilder> cli)
         {
-            var builder = CliBuilder.Create();
+            var builder = new CliBuilder();
             cli?.Invoke(builder);
             return builder.Build();
         }

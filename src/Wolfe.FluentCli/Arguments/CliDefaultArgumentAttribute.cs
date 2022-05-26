@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Wolfe.FluentCli.Options
+namespace Wolfe.FluentCli.Arguments
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class CliDefaultOptionAttribute : Attribute
+    public class CliDefaultArgumentAttribute : Attribute
     {
-        public CliDefaultOptionAttribute(bool required = false)
+        public CliDefaultArgumentAttribute(bool required = false)
         {
             Required = required;
         }

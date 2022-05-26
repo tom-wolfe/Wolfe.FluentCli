@@ -13,6 +13,6 @@ namespace Wolfe.FluentCli.Core.Builders
         /// <typeparam name="TArgs">The type of arguments that the command handler accepts.</typeparam>
         /// <param name="args">A method that defines how the arguments should be configured.</param>
         /// <returns>The current instance of <see cref="ICommandBuilder"/>.</returns>
-        ICommandBuilder WithOptions<TArgs>(Action<IArgumentsBuilder<TArgs>> args = null);
+        ICommandBuilder WithArguments<TArgs>(Action<IArgumentsBuilder<TArgs>> args = null);
     }
 }

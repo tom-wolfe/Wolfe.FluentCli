@@ -77,7 +77,7 @@ namespace Wolfe.FluentCli.Parser
 
         private CliToken ScanIdentifier()
         {
-            var identifier = SeekUntil(c => !char.IsLetterOrDigit(c) && c != '-');
+            var identifier = SeekUntil(c => char.IsWhiteSpace(c) || c == ASSIGNMENT);
             return new CliToken(CliTokenType.Identifier, identifier);
         }
 

@@ -6,7 +6,7 @@ using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Core.Builders;
 using Wolfe.FluentCli.Core.Internal;
 
-namespace Wolfe.FluentCli.Options
+namespace Wolfe.FluentCli.Arguments
 {
     internal class DynamicArgumentFactory<TArgs>
     {
@@ -63,7 +63,7 @@ namespace Wolfe.FluentCli.Options
         private static CliParameter CreateOption(PropertyInfo property)
         {
             var strategy = new KebabCasePropertyNamingStrategy();
-            if (property.GetCustomAttributes(typeof(CliOptionAttribute), true).FirstOrDefault() is CliOptionAttribute attribute)
+            if (property.GetCustomAttributes(typeof(CliArgumentAttribute), true).FirstOrDefault() is CliArgumentAttribute attribute)
             {
                 return new CliParameter
                 {
@@ -73,7 +73,7 @@ namespace Wolfe.FluentCli.Options
                     AllowedValues = GetPropertyAllowedValues(property)
                 };
             }
-            if (property.GetCustomAttributes(typeof(CliDefaultOptionAttribute), true).FirstOrDefault() is CliDefaultOptionAttribute attr)
+            if (property.GetCustomAttributes(typeof(CliDefaultArgumentAttribute), true).FirstOrDefault() is CliDefaultArgumentAttribute attr)
             {
                 return new CliParameter
                 {

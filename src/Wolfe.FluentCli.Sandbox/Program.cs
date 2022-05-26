@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Threading.Tasks;
 using Wolfe.FluentCli.Core;
-using Wolfe.FluentCli.Options;
+using Wolfe.FluentCli.Arguments;
 
 namespace Wolfe.FluentCli.Sandbox
 {
@@ -13,10 +14,9 @@ namespace Wolfe.FluentCli.Sandbox
             var cli = Cli.Build(cli => cli
                 .WithDefault<DefaultCommandHandler, TestArgs>()
                 .AddCommand("foo", hello => hello
-                    .AddCommand<HelloCommandHandler, TestArgs>("hello")
+                    .AddCommand<HelloCommandHandler>("hello"))
                     .AddCommand<BarCommandHandler>("bar")
-                )
-            );
+                );
 
             await cli.ExecuteAsync("--name Tom -a 31");
             await cli.ExecuteAsync("foo");
@@ -29,7 +29,7 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class TestArgs
     {
-        [CliDefaultOption]
+        [CliDefaultArgument]
         public string Unnamed { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
@@ -38,18 +38,18 @@ namespace Wolfe.FluentCli.Sandbox
 
     public class DefaultCommandHandler : ICommandHandler<TestArgs>
     {
-        public Task Execute(CliContext context, TestArgs options)
+        public Task Execute(CliContext context, TestArgs args)
         {
-            Console.WriteLine($"Default: {options.Unnamed} - {options.Name} is {options.Age} years old");
+            Console.WriteLine($"Default: {args.Unnamed} - {args.Name} is {args.Age} years old");
             return Task.CompletedTask;
         }
     }
 
     public class HelloCommandHandler : ICommandHandler<TestArgs>
     {
-        public Task Execute(CliContext context, TestArgs options)
+        public Task Execute(CliContext context, TestArgs args)
         {
-            Console.WriteLine($"Default: {options.Unnamed} - Hello {options.Name}! Your favorite colors are {string.Join(", ", options.Colors)}");
+            Console.WriteLine($"Default: {args.Unnamed} - Hello {args.Name}! Your favorite colors are {string.Join(", ", args.Colors)}");
             return Task.CompletedTask;
         }
     }

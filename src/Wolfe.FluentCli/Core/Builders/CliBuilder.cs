@@ -12,10 +12,6 @@ namespace Wolfe.FluentCli.Core.Builders
         private readonly List<CliNamedCommand> _subCommands = new();
         private ServiceProvider _serviceProvider = Activator.CreateInstance;
 
-        protected CliBuilder() { }
-
-        public static ICliBuilder Create() => new CliBuilder();
-
         public ICliBuilder WithServiceProvider(ServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -23,7 +19,7 @@ namespace Wolfe.FluentCli.Core.Builders
         }
 
         public ICliBuilder WithDefault<THandler, TArgs>() =>
-            WithDefault<THandler>(command => command.WithOptions<TArgs>());
+            WithDefault<THandler>(command => command.WithArguments<TArgs>());
 
         public ICliBuilder WithDefault<THandler>(Action<ICommandBuilder> command = null)
         {
@@ -37,7 +33,7 @@ namespace Wolfe.FluentCli.Core.Builders
             AddCommand<NullCommand>(name, command);
 
         public ICliBuilder AddCommand<THandler, TArgs>(string name) =>
-            AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
+            AddCommand<THandler>(name, command => command.WithArguments<TArgs>());
 
         public ICliBuilder AddCommand<THandler>(string name, Action<INamedCommandBuilder> command)
         {

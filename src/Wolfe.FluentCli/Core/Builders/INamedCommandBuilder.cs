@@ -7,7 +7,7 @@ namespace Wolfe.FluentCli.Core.Builders
     /// </summary>
     public interface INamedCommandBuilder
     {
-        INamedCommandBuilder WithOptions<TArgs>(Action<IArgumentsBuilder<TArgs>> options = null);
+        INamedCommandBuilder WithArguments<TArgs>(Action<IArgumentsBuilder<TArgs>> arguments = null);
 
         /// <summary>
         /// Adds a subcommand with no handler that acts as a named grouping of subcommands.
