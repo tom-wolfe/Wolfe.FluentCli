@@ -5,14 +5,14 @@ namespace Wolfe.FluentCli.Core.Internal
 {
     internal class CliCommand
     {
-        public CliCommand(Type handler, CliArguments options, List<CliNamedCommand> commands)
+        public CliCommand(Type handler, CliArguments arguments, List<CliNamedCommand> commands)
         {
             Handler = handler;
-            Options = options ?? new CliArguments();
+            Arguments = arguments ?? new CliArguments();
             Commands = commands ?? new List<CliNamedCommand>();
         }
         public Type Handler { get; }
-        public CliArguments Options { get; }
+        public CliArguments Arguments { get; }
         public List<CliNamedCommand> Commands { get; }
     }
 }

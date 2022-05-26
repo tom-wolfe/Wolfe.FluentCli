@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text;
 
-namespace Wolfe.FluentCli.Options
+namespace Wolfe.FluentCli.Arguments
 {
     internal class KebabCasePropertyNamingStrategy
     {

@@ -36,6 +36,13 @@ namespace Wolfe.FluentCli.Tests.Parser
         }
 
         [Fact]
+        public void ComplexIdentifier_ReturnsIdentifier()
+        {
+            new CliScanner("tom.wolfe@cet-uk.com")
+                .AssertReadToken(CliTokenType.Identifier, "tom.wolfe@cet-uk.com");
+        }
+
+        [Fact]
         public void QuotedString_ReturnsQuotedString()
         {
             new CliScanner("\"foo bar\"")
@@ -86,7 +93,7 @@ namespace Wolfe.FluentCli.Tests.Parser
         [Fact]
         public void Complex_ScansCorrectly()
         {
-            new CliScanner("--foo-bar=blah \"test spaces\" /arg name")
+            new CliScanner("--foo-bar=blah \"test spaces\" /arg test@example.com")
                 .AssertReadToken(CliTokenType.LongArgumentMarker, "--")
                 .AssertReadToken(CliTokenType.Identifier, "foo-bar")
                 .AssertReadToken(CliTokenType.Assignment, "=")
@@ -94,7 +101,7 @@ namespace Wolfe.FluentCli.Tests.Parser
                 .AssertReadToken(CliTokenType.StringLiteral, "test spaces")
                 .AssertReadToken(CliTokenType.ShortArgumentMarker, "/")
                 .AssertReadToken(CliTokenType.Identifier, "arg")
-                .AssertReadToken(CliTokenType.Identifier, "name");
+                .AssertReadToken(CliTokenType.Identifier, "test@example.com");
         }
     }
 }

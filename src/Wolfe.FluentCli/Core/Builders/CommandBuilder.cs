@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Wolfe.FluentCli.Commands;
 using Wolfe.FluentCli.Core.Internal;
-using Wolfe.FluentCli.Options;
+using Wolfe.FluentCli.Arguments;
 
 namespace Wolfe.FluentCli.Core.Builders
 {
@@ -11,7 +11,7 @@ namespace Wolfe.FluentCli.Core.Builders
         private readonly string _name;
         private readonly Type _handlerType;
         private readonly List<CliNamedCommand> _commands = new();
-        private CliArguments _options;
+        private CliArguments _arguments;
 
         public CommandBuilder() : this("", null) { }
 
@@ -21,14 +21,14 @@ namespace Wolfe.FluentCli.Core.Builders
             _handlerType = handlerType;
         }
 
-        public CliNamedCommand BuildNamedCommand() => new(_name, _handlerType, _options, _commands);
-        public CliCommand BuildCommand() => new(_handlerType, _options, _commands);
+        public CliNamedCommand BuildNamedCommand() => new(_name, _handlerType, _arguments, _commands);
+        public CliCommand BuildCommand() => new(_handlerType, _arguments, _commands);
 
         public INamedCommandBuilder AddCommand(string name, Action<INamedCommandBuilder> command) =>
             AddCommand<NullCommand>(name, command);
 
         public INamedCommandBuilder AddCommand<THandler, TArgs>(string name) =>
-            AddCommand<THandler>(name, command => command.WithOptions<TArgs>());
+            AddCommand<THandler>(name, command => command.WithArguments<TArgs>());
 
         public INamedCommandBuilder AddCommand<THandler>(string name, Action<INamedCommandBuilder> command = null)
         {
@@ -39,31 +39,31 @@ namespace Wolfe.FluentCli.Core.Builders
             return this;
         }
 
-        ICommandBuilder ICommandBuilder.WithOptions<TArgs>(Action<IArgumentsBuilder<TArgs>> options)
+        ICommandBuilder ICommandBuilder.WithArguments<TArgs>(Action<IArgumentsBuilder<TArgs>> arguments)
         {
-            WithOptionsCore(options);
+            WithArgumentsCore(arguments);
             return this;
         }
 
-        INamedCommandBuilder INamedCommandBuilder.WithOptions<TArgs>(Action<IArgumentsBuilder<TArgs>> options)
+        INamedCommandBuilder INamedCommandBuilder.WithArguments<TArgs>(Action<IArgumentsBuilder<TArgs>> arguments)
         {
-            WithOptionsCore(options);
+            WithArgumentsCore(arguments);
             return this;
         }
 
-        private void WithOptionsCore<TArgs>(Action<IArgumentsBuilder<TArgs>> options = null)
+        private void WithArgumentsCore<TArgs>(Action<IArgumentsBuilder<TArgs>> arguments = null)
         {
             var builder = new ArgumentBuilder<TArgs>();
 
-            if (options == null)
+            if (arguments == null)
             {
-                var optionMap = new DynamicArgumentFactory<TArgs>();
-                optionMap.ConfigureBuilder(builder);
-                builder.UseFactory(optionMap.Create);
+                var argumentMap = new DynamicArgumentFactory<TArgs>();
+                argumentMap.ConfigureBuilder(builder);
+                builder.UseFactory(argumentMap.Create);
             }
             else
-                options.Invoke(builder);
-            _options = builder.Build();
+                arguments.Invoke(builder);
+            _arguments = builder.Build();
         }
     }
 }

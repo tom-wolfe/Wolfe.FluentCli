@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Wolfe.FluentCli.Options
+namespace Wolfe.FluentCli.Arguments
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class CliOptionAttribute : Attribute
+    public class CliArgumentAttribute : Attribute
     {
-        public CliOptionAttribute(string shortName, string longName, bool required = false)
+        public CliArgumentAttribute(string shortName, string longName, bool required = false)
         {
             ShortName = shortName;
             LongName = longName;

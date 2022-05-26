@@ -7,7 +7,7 @@ using FluentAssertions;
 using Moq;
 using Wolfe.FluentCli.Core;
 using Wolfe.FluentCli.Exceptions;
-using Wolfe.FluentCli.Options;
+using Wolfe.FluentCli.Arguments;
 using Xunit;
 
 namespace Wolfe.FluentCli.Tests.E2e
@@ -76,7 +76,7 @@ namespace Wolfe.FluentCli.Tests.E2e
     }
     public class MockArgs
     {
-        [CliDefaultOption]
+        [CliDefaultArgument]
         public List<string> Names { get; set; }
     }
 }

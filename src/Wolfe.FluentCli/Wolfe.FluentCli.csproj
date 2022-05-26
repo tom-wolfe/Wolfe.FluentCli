@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Authors>Thomas R. Wolfe</Authors>
     <Copyright>2021</Copyright>
     <Description>A library for creating clean, uncoupled command line interfaces, inspired by MediatR.</Description>
@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/trwolfe13/FluentCli.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/trwolfe13/FluentCli</PackageProjectUrl>
-    <Version>1.0.0</Version>
+    <Version>2.0.0</Version>
     <Company>https://www.twolfe.dev</Company>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <AssemblyVersion>$(Version)</AssemblyVersion>

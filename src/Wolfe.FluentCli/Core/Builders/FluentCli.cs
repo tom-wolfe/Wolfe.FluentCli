@@ -31,11 +31,11 @@ namespace Wolfe.FluentCli.Core.Builders
             var result = _parser.Parse(scanner, cliDefinition);
             var context = BuildContext(result);
             var command = ResolveCommand(context);
-            var options = ResolveArguments(context, command);
-            await ExecuteCoreAsync(context, options, command);
+            var arguments = ResolveArguments(context, command);
+            await ExecuteCoreAsync(context, arguments, command);
         }
 
-        private async Task ExecuteCoreAsync(CliContext context, object options, CliCommand command)
+        private async Task ExecuteCoreAsync(CliContext context, object arguments, CliCommand command)
         {
             var handler = _serviceProvider(command.Handler) ??
                           throw new CliExecutionException($"Unable to resolve {command.Handler.Name}from service provider.");
@@ -50,7 +50,7 @@ namespace Wolfe.FluentCli.Core.Builders
             var args = new List<object> { context };
 
             if (executeMethod.GetParameters().Length > 1)
-                args.Add(options);
+                args.Add(arguments);
 
             if (executeMethod.Invoke(handler, args.ToArray()) is Task invokeTask)
                 await invokeTask;
@@ -73,18 +73,18 @@ namespace Wolfe.FluentCli.Core.Builders
 
         private static object ResolveArguments(CliContext context, CliCommand command)
         {
-            if (command.Options == null) { return null; }
+            if (command.Arguments == null) { return null; }
 
-            var options = command.Options.Options;
+            var namedArguments = command.Arguments.Parameters.Where(o => !string.IsNullOrEmpty(o.ShortName));
 
-            // Validate all required options have been passed.
-            var missingOptions = options
+            // Validate all required arguments have been passed.
+            var missingNamedArguments = namedArguments
                 .Where(o => o.Required && context.NamedArguments.All(n => n.Name != o.LongName))
                 .Select(o => o.LongName).ToList();
-            if (missingOptions.Any())
-                throw new CliInterpreterException($"The following arguments are required: {string.Join(' ', missingOptions)}.");
+            if (missingNamedArguments.Any())
+                throw new CliInterpreterException($"The following named arguments are required: {string.Join(' ', missingNamedArguments)}.");
 
-            return command.Options.Factory(context);
+            return command.Arguments.Factory(context);
         }
 
         private CliContext BuildContext(CliParseResult result)

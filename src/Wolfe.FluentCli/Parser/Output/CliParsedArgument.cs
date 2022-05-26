@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Wolfe.FluentCli.Parser.Output
 {
@@ -7,6 +8,7 @@ namespace Wolfe.FluentCli.Parser.Output
         public CliParsedArgument(string value) { Values = new List<string> { value }; }
         public CliParsedArgument(List<string> values) { Values = values ?? new List<string>(); }
 
+        public string Value => Values.FirstOrDefault();
         public List<string> Values { get; }
     }
 }
