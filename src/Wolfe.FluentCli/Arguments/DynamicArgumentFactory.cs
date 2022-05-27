@@ -36,8 +36,8 @@ namespace Wolfe.FluentCli.Arguments
             // If we have a default arg.
             if (_propertyMap.ContainsKey(UNNAMED_ARG_NAME))
             {
-                var unnamed = _propertyMap[UNNAMED_ARG_NAME];
-                SetArgumentValue(model, unnamed.Item2, context.UnnamedArguments);
+                var (_, property) = _propertyMap[UNNAMED_ARG_NAME];
+                SetArgumentValue(model, property, context.UnnamedArguments);
             }
 
             foreach (var arg in context.NamedArguments)
